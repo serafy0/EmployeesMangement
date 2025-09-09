@@ -1,0 +1,8 @@
+<nav *ngIf="auth.currentUserValue?.roles?.includes('Admin')">
+  <a routerLink="/dashboard">Dashboard</a> |
+  <a routerLink="/employees">Employees</a> |
+  <a routerLink="/employees/new">Add Employee</a> |
+  <a routerLink="/attendance/daily">Daily Attendance</a> |
+  <a routerLink="/attendance/summaries">Attendance Summaries</a> |
+  <a routerLink="/attendance/insights">Insights</a>
+</nav>

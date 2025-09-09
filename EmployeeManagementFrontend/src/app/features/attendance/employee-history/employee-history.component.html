@@ -1,0 +1,19 @@
+<h2>Check-In History</h2>
+
+<div>
+  <label>Page size:</label>
+  <select [(ngModel)]="pageSize" (ngModelChange)="load()">
+    <option [value]="5">5</option>
+    <option [value]="10">10</option>
+    <option [value]="25">25</option>
+  </select>
+</div>
+
+<div>
+  <button (click)="prev()" [disabled]="pageIndex === 0">Prev</button>
+  <button (click)="next()" [disabled]="!data?.hasNextPage">Next</button>
+</div>
+
+<div *ngIf="data">
+  <pre>{{ data | json }}</pre>
+</div>

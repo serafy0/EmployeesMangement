@@ -1,0 +1,51 @@
+<h2>Create Employee</h2>
+<form [formGroup]="f" (ngSubmit)="onSubmit()">
+  <div><label>First</label><input formControlName="firstName" /></div>
+  <div
+    *ngIf="f.controls.firstName.touched && f.controls.firstName.invalid"
+    style="color: red"
+  >
+    Required
+  </div>
+
+  <div><label>Last</label><input formControlName="lastName" /></div>
+  <div
+    *ngIf="f.controls.lastName.touched && f.controls.lastName.invalid"
+    style="color: red"
+  >
+    Required
+  </div>
+
+  <div><label>Phone</label><input formControlName="phoneNumber" /></div>
+  <div
+    *ngIf="f.controls.phoneNumber.touched && f.controls.phoneNumber.invalid"
+    style="color: red"
+  >
+    Invalid phone
+  </div>
+
+  <div><label>National ID</label><input formControlName="nationalId" /></div>
+  <div
+    *ngIf="f.controls.nationalId.touched && f.controls.nationalId.invalid"
+    style="color: red"
+  >
+    Required
+  </div>
+
+  <div><label>Age</label><input type="number" formControlName="age" /></div>
+  <div
+    *ngIf="f.controls.age.touched && f.controls.age.invalid"
+    style="color: red"
+  >
+    Invalid age
+  </div>
+
+  <div>
+    <label>Electronic Signature (optional)</label
+    ><input formControlName="electronicSignature" />
+  </div>
+
+  <button type="submit" [disabled]="f.invalid">Create</button>
+</form>
+
+<pre *ngIf="result">{{ result | json }}</pre>

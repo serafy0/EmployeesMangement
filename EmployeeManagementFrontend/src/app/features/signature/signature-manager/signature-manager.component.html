@@ -1,0 +1,15 @@
+<h2>Signature Manager</h2>
+<div *ngIf="userId">Managing signature for user: {{ userId }}</div>
+<div *ngIf="signatureUrl">
+  <strong>Current signature URL:</strong>
+  <a [href]="signatureUrl" target="_blank">{{ signatureUrl }}</a>
+</div>
+
+<div>
+  <label>Upload file</label>
+  <input type="file" (change)="onFile($event)" />
+  <button (click)="upload()" [disabled]="!file">Upload</button>
+  <button (click)="delete()" [disabled]="!signatureUrl">Delete</button>
+</div>
+
+<pre *ngIf="result">{{ result | json }}</pre>

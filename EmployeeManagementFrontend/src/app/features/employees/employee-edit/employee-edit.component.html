@@ -1,0 +1,16 @@
+<h2>Edit Employee</h2>
+<form [formGroup]="f" (ngSubmit)="onSubmit()">
+  <div><label>First</label><input formControlName="firstName" /></div>
+  <div><label>Last</label><input formControlName="lastName" /></div>
+  <div><label>Phone</label><input formControlName="phoneNumber" /></div>
+  <div><label>National ID</label><input formControlName="nationalId" /></div>
+  <div><label>Age</label><input type="number" formControlName="age" /></div>
+  <div>
+    <label>Electronic Signature (URL)</label
+    ><input formControlName="electronicSignature" />
+  </div>
+  <button type="submit" [disabled]="f.invalid">Save</button>
+</form>
+<pre *ngIf="result">{{ result | json }}</pre>
+<!-- <pre>ID: {{ id }}</pre>
+<pre *ngIf="f">{{ f.value | json }}</pre> -->

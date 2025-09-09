@@ -1,0 +1,17 @@
+<h2>My Profile</h2>
+
+<div *ngIf="user">
+  <h3>Personal Info</h3>
+  <pre>{{ user | json }}</pre>
+</div>
+
+<div>
+  <h3>Weekly Attendance Summary</h3>
+  <label>Week start (optional, ISO date e.g. 2025-09-07)</label>
+  <input [(ngModel)]="startDate" placeholder="YYYY-MM-DD" />
+  <button (click)="loadSummary()">Load Weekly Summary</button>
+
+  <div *ngIf="summary">
+    <pre>{{ summary | json }}</pre>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<h2>My Signature</h2>
+<div *ngIf="signatureUrl">
+  <a [href]="signatureUrl" target="_blank">{{ signatureUrl }}</a>
+</div>
+
+<div>
+  <input type="file" (change)="onFile($event)" />
+  <button (click)="upload()" [disabled]="!file">Upload</button>
+  <button (click)="delete()" [disabled]="!signatureUrl">Delete</button>
+</div>
+
+<div *ngIf="result">
+  <pre>{{ result | json }}</pre>
+</div>

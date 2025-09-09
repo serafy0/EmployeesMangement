@@ -1,0 +1,20 @@
+<div>
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="phoneNumber">Phone Number:</label>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber" />
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input id="password" type="password" formControlName="password" />
+    </div>
+    <button type="submit" [disabled]="loginForm.invalid">Log In</button>
+  </form>
+  <div *ngIf="errorMessage" style="color: red">
+    {{ errorMessage }}
+  </div>
+  <!-- <p>
+    First time employee? <a routerLink="/initial-setup">Set your password</a>
+  </p> -->
+</div>

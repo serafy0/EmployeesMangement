@@ -1,0 +1,66 @@
+<!-- Basic HTML table, no CSS -->
+<!-- Root container -->
+<div>
+  <h2>Employees (Admin)</h2>
+
+  <!-- Filters -->
+  <div>
+    <label for="filterColumn">Filter column:</label>
+    <select id="filterColumn" [(ngModel)]="filterColumn">
+      <option [ngValue]="null">-- none --</option>
+      <option *ngFor="let c of columns" [value]="c">{{ c }}</option>
+    </select>
+
+    <label for="filterQuery">Query:</label>
+    <input id="filterQuery" [(ngModel)]="filterQuery" />
+    <button (click)="applyFilter()">Apply</button>
+    <button (click)="clearFilter()">Clear</button>
+  </div>
+
+  <!-- Page size -->
+  <div>
+    <label>Page size:</label>
+    <!-- use ngModelChange to pass the numeric value directly -->
+    <select [(ngModel)]="pageSize" (ngModelChange)="setPageSize($event)">
+      <option [value]="5">5</option>
+      <option [value]="10">10</option>
+      <option [value]="25">25</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th (click)="toggleSort('firstName')">First Name</th>
+        <th (click)="toggleSort('lastName')">Last Name</th>
+        <th (click)="toggleSort('nationalId')">National ID</th>
+        <th (click)="toggleSort('phoneNumber')">Phone</th>
+        <th (click)="toggleSort('age')">Age</th>
+        <th (click)="toggleSort('isPasswordSet')">Password Set</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let e of employees">
+        <td>{{ e.firstName }}</td>
+        <td>{{ e.lastName }}</td>
+        <td>{{ e.nationalId }}</td>
+        <td>{{ e.phoneNumber }}</td>
+        <td>{{ e.age }}</td>
+        <td>{{ e.isPasswordSet }}</td>
+        <td>
+          <button (click)="onEdit(e)">Edit</button>
+          <button (click)="onDelete(e)">Delete</button>
+          <button (click)="onManageSignature(e)">Signature</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination controls -->
+  <div>
+    <button (click)="prev()" [disabled]="pageIndex === 0">Prev</button>
+    <span>Page: {{ pageIndex + 1 }} / {{ result?.totalPages ?? 1 }}</span>
+    <button (click)="next()" [disabled]="!result?.hasNextPage">Next</button>
+  </div>
+</div>

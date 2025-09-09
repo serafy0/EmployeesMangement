@@ -1,0 +1,16 @@
+<h2>Daily Check-In / Check-Out</h2>
+
+<div>
+  <button (click)="doCheckIn()" [disabled]="loading">Check In</button>
+  <button (click)="doCheckOut()" [disabled]="loading">Check Out</button>
+</div>
+
+<div *ngIf="message" style="margin-top: 10px">
+  <strong>Message:</strong>
+  <pre>{{ message | json }}</pre>
+</div>
+
+<div *ngIf="lastResponse" style="margin-top: 10px">
+  <strong>Last response:</strong>
+  <pre>{{ lastResponse | json }}</pre>
+</div>

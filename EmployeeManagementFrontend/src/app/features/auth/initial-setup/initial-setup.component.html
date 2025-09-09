@@ -1,0 +1,37 @@
+<div>
+  <h2>Set Your Initial Password</h2>
+  <form [formGroup]="setupForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="phoneNumber">Phone Number:</label>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber" />
+    </div>
+    <div>
+      <label for="newPassword">New Password:</label>
+      <input id="newPassword" type="password" formControlName="newPassword" />
+    </div>
+    <div>
+      <label for="confirmPassword">Confirm Password:</label>
+      <input
+        id="confirmPassword"
+        type="password"
+        formControlName="confirmPassword"
+      />
+      <div
+        *ngIf="setupForm.errors?.['mismatch'] && setupForm.get('confirmPassword')?.touched"
+        style="color: red"
+      >
+        Passwords do not match.
+      </div>
+    </div>
+    <button type="submit" [disabled]="setupForm.invalid">
+      Set Password & Login
+    </button>
+  </form>
+  @if(errorMessage){
+  <div style="color: red">{{ errorMessage }}</div>
+
+  } @if(successMessage){
+  <div style="color: green">{{ successMessage }}</div>
+  }
+  <p>Already have an account? <a routerLink="/login">Login here</a></p>
+</div>

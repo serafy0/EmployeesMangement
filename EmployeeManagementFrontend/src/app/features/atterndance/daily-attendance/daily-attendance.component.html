@@ -1,0 +1,13 @@
+<h2>Daily Attendance (Admin)</h2>
+<div>
+  <label>Target date (ISO):</label>
+  <input [(ngModel)]="date" placeholder="YYYY-MM-DD" />
+  <button (click)="load()">Load</button>
+</div>
+
+<h3>Attendance List</h3>
+<pre *ngIf="attendance">{{ attendance | json }}</pre>
+
+<h3>Summaries</h3>
+<button (click)="loadSummaries()">Load summaries</button>
+<pre *ngIf="summaries">{{ summaries | json }}</pre>

@@ -1,0 +1,22 @@
+<div>
+  <h2>Welcome to your Dashboard</h2>
+  <div *ngIf="currentUser">
+    <h3>Your Information:</h3>
+    <pre>{{ currentUser | json }}</pre>
+
+    <div
+      *ngIf="currentUser.roles.includes('Admin')"
+      style="border: 1px solid blue; padding: 10px; margin-top: 10px"
+    >
+      <p><strong>Admin Controls:</strong> You can manage employees here.</p>
+    </div>
+    <div
+      *ngIf="currentUser.roles.includes('Employee')"
+      style="border: 1px solid green; padding: 10px; margin-top: 10px"
+    >
+      <p><strong>Employee Actions:</strong> Check-in and view your profile.</p>
+    </div>
+  </div>
+
+  <button (click)="logout()">Logout</button>
+</div>
