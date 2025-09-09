@@ -1,0 +1,173 @@
+:host {
+  display: block;
+  box-sizing: border-box;
+}
+
+.page-shell {
+  min-height: calc(100vh - 48px);
+  padding: 20px;
+  background: #fafafa;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 980px;
+  border-radius: 8px;
+}
+
+.profile-grid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.profile-info {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+.info-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.info-row mat-icon {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 20px;
+  width: 28px;
+}
+
+.info-text .label {
+  font-size: 0.78rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.info-text .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.87);
+  margin-top: 2px;
+}
+
+.summary-block {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.date-field {
+  width: 100%;
+}
+
+.stat-card {
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.stat-left,
+.stat-right {
+  text-align: left;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.details {
+  margin-top: 4px;
+}
+
+.section-title {
+  margin: 4px 0 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 0;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  padding: 12px 16px;
+  font-size: 0.95rem;
+}
+
+.no-rows {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+@media (max-width: 820px) {
+  .profile-grid {
+    flex-direction: column;
+  }
+
+  .summary-block {
+    width: 100%;
+  }
+
+  .card {
+    padding: 8px;
+  }
+
+  th.mat-header-cell,
+  td.mat-cell {
+    padding: 10px 8px;
+  }
+}

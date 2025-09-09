@@ -5,15 +5,57 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+
+// Material
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-initial-setup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+  ],
   templateUrl: './initial-setup.component.html',
+  styles: [
+    `
+      .center {
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+      .form-card {
+        width: 100%;
+        max-width: 520px;
+      }
+      .full {
+        width: 100%;
+      }
+      .error-text {
+        color: #b00020;
+        margin-top: 8px;
+      }
+      .success-text {
+        color: #2e7d32;
+        margin-top: 8px;
+      }
+    `,
+  ],
 })
 export class InitialSetupComponent implements OnInit {
   setupForm: FormGroup;
@@ -25,7 +67,8 @@ export class InitialSetupComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snack: MatSnackBar
   ) {
     this.setupForm = this.fb.group(
       {
@@ -43,6 +86,17 @@ export class InitialSetupComponent implements OnInit {
     });
   }
 
+  // getters for strict template typing
+  get phoneNumber() {
+    return this.setupForm.get('phoneNumber');
+  }
+  get newPassword() {
+    return this.setupForm.get('newPassword');
+  }
+  get confirmPassword() {
+    return this.setupForm.get('confirmPassword');
+  }
+
   passwordMatchValidator(form: FormGroup) {
     return form.get('newPassword')?.value === form.get('confirmPassword')?.value
       ? null
@@ -52,6 +106,7 @@ export class InitialSetupComponent implements OnInit {
   onSubmit(): void {
     if (this.setupForm.invalid || !this.resetToken) {
       this.errorMessage = 'Token is missing or form is invalid.';
+      this.setupForm.markAllAsTouched();
       return;
     }
     this.errorMessage = null;
@@ -67,6 +122,7 @@ export class InitialSetupComponent implements OnInit {
         next: (response) => {
           if (response.success) {
             this.successMessage = 'Password set! Redirecting to dashboard...';
+            this.snack.open(this.successMessage, 'Close', { duration: 2000 });
             setTimeout(() => this.router.navigate(['/dashboard']), 2000);
           } else {
             this.errorMessage = response.message;
@@ -76,6 +132,9 @@ export class InitialSetupComponent implements OnInit {
           this.errorMessage =
             'An error occurred. Please check your details and try again.';
           console.error(err);
+          this.snack.open('Failed to set password', 'Close', {
+            duration: 3000,
+          });
         },
       });
   }

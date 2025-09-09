@@ -1,66 +1,120 @@
-<!-- Basic HTML table, no CSS -->
-<!-- Root container -->
-<div>
-  <h2>Employees (Admin)</h2>
+<div class="page-shell">
+  <mat-card class="card">
+    <mat-card-content>
+      <div class="controls">
+        <mat-form-field appearance="outline" class="filter-col">
+          <mat-label>Filter column</mat-label>
+          <mat-select [(ngModel)]="filterColumn">
+            <mat-option [value]="null">-- none --</mat-option>
+            <mat-option *ngFor="let c of columns" [value]="c">{{
+              c
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
 
-  <!-- Filters -->
-  <div>
-    <label for="filterColumn">Filter column:</label>
-    <select id="filterColumn" [(ngModel)]="filterColumn">
-      <option [ngValue]="null">-- none --</option>
-      <option *ngFor="let c of columns" [value]="c">{{ c }}</option>
-    </select>
+        <mat-form-field appearance="outline" class="filter-q">
+          <mat-label>Query</mat-label>
+          <input
+            matInput
+            [(ngModel)]="filterQuery"
+            (keyup.enter)="applyFilter()"
+          />
+        </mat-form-field>
 
-    <label for="filterQuery">Query:</label>
-    <input id="filterQuery" [(ngModel)]="filterQuery" />
-    <button (click)="applyFilter()">Apply</button>
-    <button (click)="clearFilter()">Clear</button>
-  </div>
+        <button mat-stroked-button (click)="applyFilter()">Apply</button>
+        <button mat-button (click)="clearFilter()">Clear</button>
+        <span class="spacer"></span>
+        <button mat-flat-button color="primary" (click)="onCreate()">
+          Add employee
+        </button>
+      </div>
 
-  <!-- Page size -->
-  <div>
-    <label>Page size:</label>
-    <!-- use ngModelChange to pass the numeric value directly -->
-    <select [(ngModel)]="pageSize" (ngModelChange)="setPageSize($event)">
-      <option [value]="5">5</option>
-      <option [value]="10">10</option>
-      <option [value]="25">25</option>
-    </select>
-  </div>
+      <div class="table-wrap">
+        <table mat-table [dataSource]="data" matSort class="mat-elevation-z1">
+          <ng-container matColumnDef="firstName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="firstName">
+              First
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.firstName }}</td>
+          </ng-container>
 
-  <table>
-    <thead>
-      <tr>
-        <th (click)="toggleSort('firstName')">First Name</th>
-        <th (click)="toggleSort('lastName')">Last Name</th>
-        <th (click)="toggleSort('nationalId')">National ID</th>
-        <th (click)="toggleSort('phoneNumber')">Phone</th>
-        <th (click)="toggleSort('age')">Age</th>
-        <th (click)="toggleSort('isPasswordSet')">Password Set</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let e of employees">
-        <td>{{ e.firstName }}</td>
-        <td>{{ e.lastName }}</td>
-        <td>{{ e.nationalId }}</td>
-        <td>{{ e.phoneNumber }}</td>
-        <td>{{ e.age }}</td>
-        <td>{{ e.isPasswordSet }}</td>
-        <td>
-          <button (click)="onEdit(e)">Edit</button>
-          <button (click)="onDelete(e)">Delete</button>
-          <button (click)="onManageSignature(e)">Signature</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          <ng-container matColumnDef="lastName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="lastName">
+              Last
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.lastName }}</td>
+          </ng-container>
 
-  <!-- Pagination controls -->
-  <div>
-    <button (click)="prev()" [disabled]="pageIndex === 0">Prev</button>
-    <span>Page: {{ pageIndex + 1 }} / {{ result?.totalPages ?? 1 }}</span>
-    <button (click)="next()" [disabled]="!result?.hasNextPage">Next</button>
-  </div>
+          <ng-container matColumnDef="nationalId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="nationalId">
+              National ID
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.nationalId }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="phoneNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="phoneNumber">
+              Phone
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.phoneNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="age">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="age">Age</th>
+            <td mat-cell *matCellDef="let e">{{ e.age }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="isPasswordSet">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header="isPasswordSet"
+            >
+              Password Set
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.isPasswordSet }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let e">
+              <button mat-icon-button (click)="onEdit(e)" matTooltip="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="onManageSignature(e)"
+                matTooltip="Signature"
+              >
+                <mat-icon>image</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onDelete(e)"
+                matTooltip="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <div class="loading" *ngIf="loading">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      </div>
+
+      <mat-paginator
+        [length]="result?.totalCount ?? 0"
+        [pageIndex]="pageIndex"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+      >
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
 </div>

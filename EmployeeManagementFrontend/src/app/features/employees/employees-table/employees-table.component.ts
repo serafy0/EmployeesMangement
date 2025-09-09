@@ -1,32 +1,59 @@
-import { Component, OnInit } from '@angular/core';
-import { EmployeeService } from '../../../core/services/employee/employee.service';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { EmployeeService } from '../../../core/services/employee/employee.service';
 import { ApiResult } from '../../../core/models/ApiResult.model';
 import { EmployeeDTOForAdmins } from '../../../core/models/employee-dto-for-admins.model';
-import { Router } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import {
+  MatPaginatorModule,
+  MatPaginator,
+  PageEvent,
+} from '@angular/material/paginator';
+import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-employees-table',
-  templateUrl: './employees-table.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+  ],
+  templateUrl: './employees-table.component.html',
+  styleUrls: ['./employees-table.component.scss'],
 })
-export class EmployeesTableComponent implements OnInit {
-  employees: EmployeeDTOForAdmins[] = [];
+export class EmployeesTableComponent implements OnInit, AfterViewInit {
+  displayedColumns = [
+    'firstName',
+    'lastName',
+    'nationalId',
+    'phoneNumber',
+    'age',
+    'isPasswordSet',
+    'actions',
+  ];
+  data: EmployeeDTOForAdmins[] = [];
   result: ApiResult<EmployeeDTOForAdmins> | null = null;
-
-  // paging & sorting state
-  pageIndex = 0;
-  pageSize = 10;
-  sortColumn: string | null = null;
-  sortOrder: 'ASC' | 'DESC' | null = null;
-
-  // filtering
-  filterColumn: string | null = null;
-  filterQuery: string | null = null;
-
-  // columns available for sorting/filtering
   columns = [
     'firstName',
     'lastName',
@@ -35,14 +62,52 @@ export class EmployeesTableComponent implements OnInit {
     'age',
     'isPasswordSet',
   ];
+  filterColumn: string | null = null;
+  filterQuery: string | null = null;
+  loading = false;
 
-  constructor(private svc: EmployeeService, private router: Router) {}
+  pageIndex = 0;
+  pageSize = 10;
+
+  sortColumn: string | null = null;
+  sortOrder: 'ASC' | 'DESC' | null = null;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private svc: EmployeeService,
+    private router: Router,
+    private snack: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.load();
   }
 
+  ngAfterViewInit() {
+    if (this.paginator) {
+      this.paginator.page.subscribe((pe: PageEvent) => {
+        this.pageIndex = pe.pageIndex;
+        this.pageSize = pe.pageSize;
+        this.load();
+      });
+    }
+    if (this.sort) {
+      this.sort.sortChange.subscribe((s: Sort) => {
+        this.pageIndex = 0;
+        this.paginator && (this.paginator.pageIndex = 0);
+        this.sortColumn = s.active || null;
+        this.sortOrder = s.direction
+          ? (s.direction.toUpperCase() as 'ASC' | 'DESC')
+          : null;
+        this.load();
+      });
+    }
+  }
+
   load() {
+    this.loading = true;
     this.svc
       .getEmployees({
         pageIndex: this.pageIndex,
@@ -52,74 +117,51 @@ export class EmployeesTableComponent implements OnInit {
         filterColumn: this.filterColumn,
         filterQuery: this.filterQuery,
       })
-      .subscribe((res) => {
-        this.result = res;
-        this.employees = res.data;
+      .subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.result = res;
+          this.data = res.data;
+        },
+        error: (err) => {
+          this.loading = false;
+          this.snack.open('Failed to load employees', 'Close', {
+            duration: 3000,
+          });
+        },
       });
-  }
-
-  // header click toggles sorting
-  toggleSort(column: string) {
-    if (this.sortColumn !== column) {
-      this.sortColumn = column;
-      this.sortOrder = 'ASC';
-    } else if (this.sortOrder === 'ASC') {
-      this.sortOrder = 'DESC';
-    } else {
-      this.sortColumn = null;
-      this.sortOrder = null;
-    }
-    this.pageIndex = 0;
-    this.load();
-  }
-
-  // pagination
-  next() {
-    if (this.result && this.result.hasNextPage) {
-      this.pageIndex++;
-      this.load();
-    }
-  }
-
-  prev() {
-    if (this.pageIndex > 0) {
-      this.pageIndex--;
-      this.load();
-    }
-  }
-
-  setPageSize(size: number) {
-    this.pageSize = size;
-    this.pageIndex = 0;
-    this.load();
   }
 
   applyFilter() {
     this.pageIndex = 0;
+    this.paginator && (this.paginator.pageIndex = 0);
     this.load();
   }
 
   clearFilter() {
     this.filterColumn = null;
     this.filterQuery = null;
-    this.pageIndex = 0;
-    this.load();
-  }
-
-  onDelete(employee: EmployeeDTOForAdmins) {
-    if (!confirm(`Delete ${employee.firstName} ${employee.lastName}?`)) return;
-    this.svc.deleteEmployee(employee.id).subscribe(() => this.load());
+    this.applyFilter();
   }
 
   onCreate() {
     this.router.navigate(['/employees/new']);
   }
 
-  onEdit(employee: EmployeeDTOForAdmins) {
-    this.router.navigate([`/employees/${employee.id}/edit`]);
+  onEdit(e: EmployeeDTOForAdmins) {
+    this.router.navigate([`/employees/${e.id}/edit`]);
   }
 
-  onManageSignature(employee: EmployeeDTOForAdmins) {
-    this.router.navigate([`/employees/${employee.id}/signature`]);
+  onManageSignature(e: EmployeeDTOForAdmins) {
+    this.router.navigate([`/employees/${e.id}/signature`]);
+  }
+
+  onDelete(e: EmployeeDTOForAdmins) {
+    if (!confirm(`Delete ${e.firstName} ${e.lastName}?`)) return;
+    this.svc.deleteEmployee(e.id).subscribe({
+      next: () => this.load(),
+      error: () =>
+        this.snack.open('Failed to delete', 'Close', { duration: 3000 }),
+    });
   }
 }

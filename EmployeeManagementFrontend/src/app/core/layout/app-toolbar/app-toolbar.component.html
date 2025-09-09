@@ -1,0 +1,77 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <span class="app-title" routerLink="/dashboard">Employee Management</span>
+
+  <span class="spacer"></span>
+
+  <!-- desktop buttons (hidden on small screens) -->
+  <ng-container *ngIf="!isSmall">
+    <button mat-button routerLink="/dashboard" *ngIf="auth.currentUserValue">
+      Dashboard
+    </button>
+
+    <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Admin')">
+      <button mat-button routerLink="/employees">Employees</button>
+      <button mat-button routerLink="/employees/new">Add Employees</button>
+      <button mat-button routerLink="/attendance/daily">Daily</button>
+      <button mat-button routerLink="/attendance/summaries">Summaries</button>
+    </ng-container>
+
+    <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Employee')">
+      <button mat-button routerLink="/me/profile">Profile</button>
+      <button mat-button routerLink="/me/checkin">Check-In</button>
+      <button mat-button routerLink="/me/history">History</button>
+      <button mat-button routerLink="/me/signature">Signature</button>
+    </ng-container>
+
+    <button mat-icon-button (click)="logout()" matTooltip="Logout">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </ng-container>
+
+  <!-- mobile menu -->
+  <ng-container *ngIf="isSmall">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/dashboard">
+        <mat-icon>dashboard</mat-icon> Dashboard
+      </button>
+
+      <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Admin')">
+        <button mat-menu-item routerLink="/employees">
+          <mat-icon>people</mat-icon> Employees
+        </button>
+        <button mat-menu-item routerLink="/employees/new">
+          <mat-icon>person_add</mat-icon> Add
+        </button>
+        <button mat-menu-item routerLink="/attendance/daily">
+          <mat-icon>today</mat-icon> Daily
+        </button>
+        <button mat-menu-item routerLink="/attendance/summaries">
+          <mat-icon>timeline</mat-icon> Summaries
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Employee')">
+        <button mat-menu-item routerLink="/me/profile">
+          <mat-icon>person</mat-icon> Profile
+        </button>
+        <button mat-menu-item routerLink="/me/checkin">
+          <mat-icon>check_circle</mat-icon> Check-In
+        </button>
+        <button mat-menu-item routerLink="/me/history">
+          <mat-icon>history</mat-icon> History
+        </button>
+        <button mat-menu-item routerLink="/me/signature">
+          <mat-icon>edit</mat-icon> Signature
+        </button>
+      </ng-container>
+
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon> Logout
+      </button>
+    </mat-menu>
+  </ng-container>
+</mat-toolbar>

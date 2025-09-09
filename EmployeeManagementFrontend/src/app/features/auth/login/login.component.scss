@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  background: #fafafa;
+  box-sizing: border-box;
+  padding: 24px;
+}
+
+/* center container */
+.login-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 48px);
+  padding: 8px;
+}
+
+/* keep the card modest width so it never stretches */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* vertical spacing inside the form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* make mat-form-field full width inside the card */
+.full {
+  width: 100%;
+}
+
+/* align the button to the right, smaller footprint */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+/* footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+/* link style */
+.link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* error message */
+.error {
+  color: #b00020;
+  font-size: 0.9rem;
+}
+
+
+
+@media (max-width: 420px) {
+  .login-card {
+    max-width: 360px;
+  }
+}

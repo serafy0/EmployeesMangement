@@ -4,7 +4,7 @@ import { InitialSetupComponent } from './features/auth/initial-setup/initial-set
 import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
 import { EmployeesTableComponent } from './features/employees/employees-table/employees-table.component';
-import { DailyAttendanceComponent } from './features/atterndance/daily-attendance/daily-attendance.component';
+import { DailyAttendanceComponent } from './features/attendance/daily-attendance/daily-attendance.component';
 import { EmployeeCreateComponent } from './features/employees/employee-create/employee-create.component';
 import { EmployeeEditComponent } from './features/employees/employee-edit/employee-edit.component';
 import { SignatureManagerComponent } from './features/signature/signature-manager/signature-manager.component';

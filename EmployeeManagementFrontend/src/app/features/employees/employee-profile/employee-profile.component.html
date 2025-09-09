@@ -1,17 +1,141 @@
-<h2>My Profile</h2>
+<div class="page-shell">
+  <mat-card class="card">
+    <mat-card-content>
+      <div class="profile-grid">
+        <div class="profile-info">
+          <div class="info-row">
+            <mat-icon>person</mat-icon>
+            <div class="info-text">
+              <div class="label">Name</div>
+              <div class="value">
+                {{ user?.firstName }} {{ user?.lastName }}
+              </div>
+            </div>
+          </div>
 
-<div *ngIf="user">
-  <h3>Personal Info</h3>
-  <pre>{{ user | json }}</pre>
-</div>
+          <div class="info-row">
+            <mat-icon>phone</mat-icon>
+            <div class="info-text">
+              <div class="label">Phone</div>
+              <div class="value">{{ user?.phoneNumber }}</div>
+            </div>
+          </div>
 
-<div>
-  <h3>Weekly Attendance Summary</h3>
-  <label>Week start (optional, ISO date e.g. 2025-09-07)</label>
-  <input [(ngModel)]="startDate" placeholder="YYYY-MM-DD" />
-  <button (click)="loadSummary()">Load Weekly Summary</button>
+          <div class="info-row">
+            <mat-icon>badge</mat-icon>
+            <div class="info-text">
+              <div class="label">National ID</div>
+              <div class="value">{{ user?.nationalId }}</div>
+            </div>
+          </div>
+        </div>
 
-  <div *ngIf="summary">
-    <pre>{{ summary | json }}</pre>
-  </div>
+        <div class="summary-block">
+          <div class="controls">
+            <mat-form-field appearance="outline" class="date-field">
+              <mat-label>Week start</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                [(ngModel)]="startDate"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="loadSummary()"
+              [disabled]="loading"
+            >
+              {{ loading ? "Loading…" : "Load summary" }}
+            </button>
+          </div>
+
+          <mat-card class="stat-card" *ngIf="summary">
+            <div class="stat-row">
+              <div class="stat-left">
+                <div class="stat-value">
+                  {{ summary?.DaysAttended ?? summary?.daysAttended ?? 0 }}
+                </div>
+                <div class="stat-label">Days attended</div>
+              </div>
+              <div class="stat-right">
+                <div class="stat-value">
+                  {{ summary?.TotalHours ?? summary?.totalHours ?? 0 }}
+                </div>
+                <div class="stat-label">Total hours</div>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="range">
+              <span class="range-label">Range</span>
+              <span class="range-value">
+                {{ formatDate(summary?.StartDate ?? summary?.startDate) }}
+                —
+                {{ formatDate(summary?.EndDate ?? summary?.endDate) }}
+              </span>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <div class="details">
+        <h3 class="section-title">Check-in details</h3>
+
+        <div *ngIf="dataSource?.length; else noRows">
+          <div class="table-wrap">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatDate(row.date) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="checkIn">
+                <th mat-header-cell *matHeaderCellDef>Check in</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatDateTime(row.checkIn) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="checkOut">
+                <th mat-header-cell *matHeaderCellDef>Check out</th>
+                <td mat-cell *matCellDef="let row">
+                  {{ formatDateTime(row.checkOut) }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="hours">
+                <th mat-header-cell *matHeaderCellDef>Hours</th>
+                <td mat-cell *matCellDef="let row">{{ row.hours }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let r; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </div>
+
+        <ng-template #noRows>
+          <div class="no-rows">
+            <mat-icon>info</mat-icon>
+            <span>No check-ins for this week</span>
+          </div>
+        </ng-template>
+
+        <div class="loading" *ngIf="loading">
+          <mat-progress-spinner
+            diameter="36"
+            mode="indeterminate"
+          ></mat-progress-spinner>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

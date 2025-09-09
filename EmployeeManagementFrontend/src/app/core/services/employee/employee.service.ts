@@ -41,7 +41,6 @@ export class EmployeeService {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  // placeholder for edit/update endpoint
   updateEmployee(id: string, payload: Partial<EmployeeDTOForAdmins>) {
     return this.http.put(`${this.baseUrl}/${id}`, payload);
   }

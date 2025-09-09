@@ -1,51 +1,96 @@
-<h2>Create Employee</h2>
-<form [formGroup]="f" (ngSubmit)="onSubmit()">
-  <div><label>First</label><input formControlName="firstName" /></div>
-  <div
-    *ngIf="f.controls.firstName.touched && f.controls.firstName.invalid"
-    style="color: red"
-  >
-    Required
-  </div>
+<div class="page-shell">
+  <mat-card class="card">
+    <mat-card-content>
+      <form
+        [formGroup]="f"
+        (ngSubmit)="onSubmit()"
+        class="form"
+        autocomplete="on"
+        novalidate
+      >
+        <div class="row">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>First name</mat-label>
+            <input matInput formControlName="firstName" />
+            <mat-error *ngIf="controls['firstName']?.hasError('required')"
+              >Required</mat-error
+            >
+            <mat-error *ngIf="controls['firstName']?.hasError('server')">{{
+              controls["firstName"].getError("server")
+            }}</mat-error>
+          </mat-form-field>
 
-  <div><label>Last</label><input formControlName="lastName" /></div>
-  <div
-    *ngIf="f.controls.lastName.touched && f.controls.lastName.invalid"
-    style="color: red"
-  >
-    Required
-  </div>
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Last name</mat-label>
+            <input matInput formControlName="lastName" />
+            <mat-error *ngIf="controls['lastName']?.hasError('required')"
+              >Required</mat-error
+            >
+            <mat-error *ngIf="controls['lastName']?.hasError('server')">{{
+              controls["lastName"].getError("server")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
 
-  <div><label>Phone</label><input formControlName="phoneNumber" /></div>
-  <div
-    *ngIf="f.controls.phoneNumber.touched && f.controls.phoneNumber.invalid"
-    style="color: red"
-  >
-    Invalid phone
-  </div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Phone number</mat-label>
+          <input matInput formControlName="phoneNumber" />
+          <mat-error *ngIf="controls['phoneNumber']?.hasError('required')"
+            >Required</mat-error
+          >
+          <mat-error *ngIf="controls['phoneNumber']?.hasError('pattern')"
+            >Invalid phone</mat-error
+          >
+          <mat-error *ngIf="controls['phoneNumber']?.hasError('server')">{{
+            controls["phoneNumber"].getError("server")
+          }}</mat-error>
+        </mat-form-field>
 
-  <div><label>National ID</label><input formControlName="nationalId" /></div>
-  <div
-    *ngIf="f.controls.nationalId.touched && f.controls.nationalId.invalid"
-    style="color: red"
-  >
-    Required
-  </div>
+        <div class="row">
+          <mat-form-field appearance="outline" class="flex-2">
+            <mat-label>National ID</mat-label>
+            <input matInput formControlName="nationalId" />
+            <mat-error *ngIf="controls['nationalId']?.hasError('required')"
+              >Required</mat-error
+            >
+            <mat-error *ngIf="controls['nationalId']?.hasError('minlength')"
+              >Minimum length required</mat-error
+            >
+            <mat-error *ngIf="controls['nationalId']?.hasError('server')">{{
+              controls["nationalId"].getError("server")
+            }}</mat-error>
+          </mat-form-field>
 
-  <div><label>Age</label><input type="number" formControlName="age" /></div>
-  <div
-    *ngIf="f.controls.age.touched && f.controls.age.invalid"
-    style="color: red"
-  >
-    Invalid age
-  </div>
+          <mat-form-field appearance="outline" class="flex-1">
+            <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age" />
+            <mat-error *ngIf="controls['age']?.hasError('required')"
+              >Required</mat-error
+            >
+            <mat-error *ngIf="controls['age']?.hasError('min')"
+              >Invalid age</mat-error
+            >
+            <mat-error *ngIf="controls['age']?.hasError('server')">{{
+              controls["age"].getError("server")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
 
-  <div>
-    <label>Electronic Signature (optional)</label
-    ><input formControlName="electronicSignature" />
-  </div>
+        <div class="actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="f.invalid || loading"
+          >
+            {{ loading ? "Creating…" : "Create" }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
 
-  <button type="submit" [disabled]="f.invalid">Create</button>
-</form>
-
-<pre *ngIf="result">{{ result | json }}</pre>
+    <mat-card-actions class="card-footer">
+      <pre *ngIf="result" class="result">{{ result | json }}</pre>
+    </mat-card-actions>
+  </mat-card>
+</div>

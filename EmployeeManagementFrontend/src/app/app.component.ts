@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AdminNavComponent } from './core/layout/admin-nav/admin-nav.component';
-import { EmployeeNavComponent } from './core/layout/employee-nav/employee-nav.component';
+import { AppToolbarComponent } from './core/layout/app-toolbar/app-toolbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, AdminNavComponent, EmployeeNavComponent],
+  imports: [RouterOutlet, AppToolbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
