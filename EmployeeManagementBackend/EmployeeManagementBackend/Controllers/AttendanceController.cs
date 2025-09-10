@@ -41,8 +41,8 @@ namespace EmployeeManagementBackend.Controllers
             //var checkInStart = new TimeSpan(7, 30, 0);
             //var checkInEnd = new TimeSpan(9, 0, 0);
             //TODO : Change back to 7:00 - 9:00 
-            var checkInStart = new TimeSpan(15,0, 0);
-            var checkInEnd = new TimeSpan(23, 0, 0);
+            var checkInStart = new TimeSpan(1,0, 0);
+            var checkInEnd = new TimeSpan(10, 0, 0);
 
 
 
