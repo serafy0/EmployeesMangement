@@ -1,51 +1,66 @@
-﻿using EmployeeManagementBackend.BackgroundServices.AttendanceJobService;
-using EmployeeManagementBackend.Data.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Threading.Tasks;
+using EmployeeManagementBackend.Data.Repos.Attendance;
+using EmployeeManagementBackend.Utils;
 using Microsoft.Extensions.Logging;
-using TextingBackendApi.Data.Context;
 
-public class AttendanceJobService : IAttendanceJobService
+namespace EmployeeManagementBackend.BackgroundServices.AttendanceJobService
 {
-    private readonly ApplicationDbContext _db;
-    private readonly ILogger<AttendanceJobService> _logger;
-    private static readonly TimeSpan AutoCheckoutOffset = TimeSpan.FromHours(8);
-
-    public AttendanceJobService(ApplicationDbContext db, ILogger<AttendanceJobService> logger)
+    public class AttendanceJobService : IAttendanceJobService
     {
-        _db = db;
-        _logger = logger;
-    }
+        private readonly IAttendanceRepository _repo;
+        private readonly ILogger<AttendanceJobService> _logger;
+        private static readonly TimeSpan AutoCheckoutOffset = TimeSpan.FromHours(8);
 
-    public async Task AutoCheckoutAsync(int attendanceId)
-    {
-        var attendance = await _db.Attendances.FirstOrDefaultAsync(a => a.Id == attendanceId);
-        if (attendance == null)
+        public AttendanceJobService(IAttendanceRepository repo, ILogger<AttendanceJobService> logger)
         {
-            _logger.LogWarning("AutoCheckout: attendance {Id} not found", attendanceId);
-            return;
+            _repo = repo;
+            _logger = logger;
         }
 
-        if (attendance.CheckInTime == null)
+        public async Task CreateMissingAttendancesForTodayAsync()
         {
-            _logger.LogWarning("AutoCheckout: attendance {Id} has no CheckInTime", attendanceId);
-            return;
+            var cairoNow = TimeHelper.GetCairoNow();
+            var today = DateOnly.FromDateTime(cairoNow);
+            await _repo.CreateMissingAttendancesForDateAsync(today);
         }
 
-        if (attendance.CheckOutTime != null)
+        public async Task CreateMissingAttendancesForDateAsync(DateOnly date)
         {
-            _logger.LogInformation("AutoCheckout: attendance {Id} already checked out", attendanceId);
-            return;
+            await _repo.CreateMissingAttendancesForDateAsync(date);
         }
 
-        // Plan checkout at CheckIn + 8 hours (deterministic). If job runs early use now instead.
-        var plannedCheckoutUtc = attendance.CheckInTime.Value.Add(AutoCheckoutOffset);
-        var checkoutUtc = plannedCheckoutUtc <= DateTime.UtcNow ? plannedCheckoutUtc : DateTime.UtcNow;
+        public async Task AutoCheckoutAsync(int attendanceId)
+        {
+            var attendance = await _repo.GetByIdAsync(attendanceId);
+            if (attendance == null)
+            {
+                _logger.LogWarning("AutoCheckout: attendance {Id} not found", attendanceId);
+                return;
+            }
 
-        attendance.CheckOutTime = checkoutUtc;
-        attendance.TotalHoursWorked = attendance.CheckOutTime.Value - attendance.CheckInTime.Value;
-        //attendance.AutoCheckoutJobId = null; 
+            if (attendance.CheckInTime == null)
+            {
+                _logger.LogWarning("AutoCheckout: attendance {Id} has no CheckInTime", attendanceId);
+                return;
+            }
 
-        await _db.SaveChangesAsync();
-        _logger.LogInformation("AutoCheckout: attendance {Id} auto-checked-out at {Time}", attendanceId, checkoutUtc);
+            if (attendance.CheckOutTime != null)
+            {
+                _logger.LogInformation("AutoCheckout: attendance {Id} already checked out", attendanceId);
+                return;
+            }
+
+            var plannedCheckoutUtc = attendance.CheckInTime.Value.Add(AutoCheckoutOffset);
+            var checkoutUtc = plannedCheckoutUtc <= DateTime.UtcNow ? plannedCheckoutUtc : DateTime.UtcNow;
+
+            attendance.CheckOutTime = checkoutUtc;
+            attendance.TotalHoursWorked = attendance.CheckOutTime.Value - attendance.CheckInTime.Value;
+
+            await _repo.UpdateAsync(attendance);
+            await _repo.SaveChangesAsync();
+
+            _logger.LogInformation("AutoCheckout: attendance {Id} auto-checked-out at {Time}", attendanceId, checkoutUtc);
+        }
     }
 }

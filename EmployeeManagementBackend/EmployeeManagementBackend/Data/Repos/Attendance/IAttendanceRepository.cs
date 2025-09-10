@@ -20,6 +20,9 @@ namespace EmployeeManagementBackend.Data.Repos.Attendance
 
 
         Task<AttendanceSummaries> GetAttendanceSummariesAsync(DateOnly today);
+        Task<int> CreateMissingAttendancesForDateAsync(DateOnly date);
+        Task<Models.Attendance?> GetByIdAsync(int id);
+
 
     }
 }

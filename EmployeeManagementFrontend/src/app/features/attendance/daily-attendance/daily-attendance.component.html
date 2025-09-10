@@ -46,12 +46,12 @@
       <mat-card
         *ngFor="let a of attendance"
         class="attendance-card"
+        [ngClass]="{ absent: !a.isPresent }"
         role="article"
       >
         <mat-card-content>
           <div class="card-top">
             <div class="name">{{ a.firstName }} {{ a.lastName }}</div>
-
             <div class="status">
               <mat-icon
                 *ngIf="a.isPresent"
@@ -64,27 +64,37 @@
 
           <mat-divider></mat-divider>
 
-          <div class="times">
-            <div class="time-row">
-              <mat-icon aria-hidden="true" class="time-icon">login</mat-icon>
-              <div>
-                <div class="label">Check-in</div>
-                <div class="value">{{ formatTimeIso(a.checkInTime) }}</div>
+          <!-- when present show check-in/check-out and total -->
+          <ng-container *ngIf="a.isPresent; else absentBlock">
+            <div class="times">
+              <div class="time-row">
+                <mat-icon aria-hidden="true" class="time-icon">login</mat-icon>
+                <div>
+                  <div class="label">Check-in</div>
+                  <div class="value">{{ formatTimeIso(a.checkInTime) }}</div>
+                </div>
+              </div>
+
+              <div class="time-row">
+                <mat-icon aria-hidden="true" class="time-icon">logout</mat-icon>
+                <div>
+                  <div class="label">Check-out</div>
+                  <div class="value">{{ formatTimeIso(a.checkOutTime) }}</div>
+                </div>
               </div>
             </div>
 
-            <div class="time-row">
-              <mat-icon aria-hidden="true" class="time-icon">logout</mat-icon>
-              <div>
-                <div class="label">Check-out</div>
-                <div class="value">{{ formatTimeIso(a.checkOutTime) }}</div>
-              </div>
+            <div class="card-bottom">
+              <div class="hours">Total: {{ displayTotalForRecord(a) }}</div>
             </div>
-          </div>
+          </ng-container>
 
-          <div class="card-bottom">
-            <div class="hours">Total: {{ displayTotalForRecord(a) }}</div>
-          </div>
+          <!-- absent view (no icon, only text) -->
+          <ng-template #absentBlock>
+            <div class="absent-block">
+              <div class="absent-text">Absent</div>
+            </div>
+          </ng-template>
         </mat-card-content>
       </mat-card>
     </div>

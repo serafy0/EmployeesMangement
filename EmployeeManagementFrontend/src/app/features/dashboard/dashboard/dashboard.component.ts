@@ -48,13 +48,7 @@ export class DashboardComponent {
           label: 'Daily Attendance',
           route: '/attendance/daily',
           icon: 'today',
-        },
-        {
-          label: 'Summaries',
-          route: '/attendance/summaries',
-          icon: 'bar_chart',
-        },
-        { label: 'Insights', route: '/attendance/insights', icon: 'insights' }
+        }
       );
     }
 

@@ -315,5 +315,17 @@ namespace EmployeeManagementBackend.Controllers
                 }
             );
         }
+
+        [HttpPost("ensure-attendances")]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<IActionResult> EnsureAttendances(DateTime? date = null)
+        {
+            var cairoNow = TimeHelper.GetCairoNow();
+            var target = DateOnly.FromDateTime((date ?? cairoNow).Date);
+
+            var created = await _attendanceRepo.CreateMissingAttendancesForDateAsync(target);
+            return Ok(new { created });
+        }
+
     }
 }

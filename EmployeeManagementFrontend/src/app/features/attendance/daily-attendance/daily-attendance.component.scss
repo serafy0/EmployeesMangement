@@ -51,6 +51,18 @@
   justify-content: space-between;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   padding: 8px;
+  background: #ffffff;
+  transition: background-color 160ms ease, transform 150ms ease;
+}
+
+.attendance-card:hover {
+  transform: translateY(-4px);
+}
+
+.attendance-card.absent {
+  background: #f5f6f7;
+  /* slightly greyer background for absent */
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .card-top {
@@ -104,19 +116,34 @@
 
 .card-bottom {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 12px;
-}
-
-.phone {
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 0.95rem;
 }
 
 .hours {
   font-weight: 700;
   color: rgba(0, 0, 0, 0.85);
+}
+
+/* absent block styles */
+.absent-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  padding: 20px 8px;
+}
+
+.absent-icon {
+  font-size: 36px;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.absent-text {
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 1.05rem;
 }
 
 .center-spinner {
@@ -158,4 +185,16 @@
     align-items: flex-start;
     gap: 8px;
   }
+}
+.absent-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 8px;
+}
+
+.absent-text {
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 1.05rem;
 }

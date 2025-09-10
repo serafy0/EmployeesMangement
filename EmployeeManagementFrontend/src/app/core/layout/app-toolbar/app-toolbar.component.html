@@ -13,7 +13,6 @@
       <button mat-button routerLink="/employees">Employees</button>
       <button mat-button routerLink="/employees/new">Add Employees</button>
       <button mat-button routerLink="/attendance/daily">Daily</button>
-      <button mat-button routerLink="/attendance/summaries">Summaries</button>
     </ng-container>
 
     <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Employee')">

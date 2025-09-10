@@ -218,5 +218,46 @@ namespace EmployeeManagementBackend.Data.Repos.Attendance
 
             return result;
         }
+
+        public async Task<Models.Attendance?> GetByIdAsync(int id)
+        {
+            return await _context.Attendances.FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<int> CreateMissingAttendancesForDateAsync(DateOnly date)
+        {
+            var employeeRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == Roles.Employee);
+            if (employeeRole == null) return 0;
+
+            var allEmployeeIds = await _context.UserRoles
+                .Where(ur => ur.RoleId == employeeRole.Id)
+                .Select(ur => ur.UserId)
+                .ToListAsync();
+
+            var existingEmployeeIds = await _context.Attendances
+                .Where(a => a.Date == date)
+                .Select(a => a.EmployeeId)
+                .ToListAsync();
+
+            var missing = allEmployeeIds.Except(existingEmployeeIds).ToList();
+            if (!missing.Any()) return 0;
+
+            var toAdd = missing.Select(id => new Models.Attendance
+            {
+                EmployeeId = id,
+                Date = date,
+                IsPresent = false,
+                CheckInTime = null,
+                CheckOutTime = null,
+                TotalHoursWorked = null,
+                Comment = null
+            }).ToList();
+
+            await _context.Attendances.AddRangeAsync(toAdd);
+            await _context.SaveChangesAsync();
+            return toAdd.Count;
+        }
+
+
     }
 }
