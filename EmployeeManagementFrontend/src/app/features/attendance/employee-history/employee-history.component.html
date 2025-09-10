@@ -1,19 +1,89 @@
-<h2>Check-In History</h2>
+<div class="page-shell">
+  <mat-card
+    class="header-card"
+    role="heading"
+    aria-label="Check-in history header"
+  >
+    <div class="header-inner">
+      <div>
+        <h2>Check-In History</h2>
+      </div>
+      <div class="header-right">
+        <div *ngIf="loading" class="spinner-inline">
+          <mat-progress-spinner
+            diameter="28"
+            mode="indeterminate"
+          ></mat-progress-spinner>
+        </div>
+      </div>
+    </div>
+  </mat-card>
 
-<div>
-  <label>Page size:</label>
-  <select [(ngModel)]="pageSize" (ngModelChange)="load()">
-    <option [value]="5">5</option>
-    <option [value]="10">10</option>
-    <option [value]="25">25</option>
-  </select>
-</div>
+  <div class="cards-grid" [ngClass]="{ mobile: isMobile }" role="list">
+    <ng-container *ngIf="data?.length; else emptyState">
+      <mat-card
+        *ngFor="let r of data"
+        class="history-card"
+        role="listitem"
+        tabindex="0"
+      >
+        <mat-card-content>
+          <div class="card-top">
+            <div class="date">{{ formatDate(r.date ?? r.Date) }}</div>
+            <div
+              class="status"
+              [ngClass]="{ present: r.isPresent ?? r.IsPresent }"
+            >
+              {{ r.isPresent ?? r.IsPresent ? "Present" : "Absent" }}
+            </div>
+          </div>
 
-<div>
-  <button (click)="prev()" [disabled]="pageIndex === 0">Prev</button>
-  <button (click)="next()" [disabled]="!data?.hasNextPage">Next</button>
-</div>
+          <mat-divider></mat-divider>
 
-<div *ngIf="data">
-  <pre>{{ data | json }}</pre>
+          <div class="times">
+            <div class="time-row">
+              <mat-icon aria-hidden="true">login</mat-icon>
+              <div>
+                <div class="label">Check-in</div>
+                <div class="value">
+                  {{ formatTime(r.checkInTime ?? r.CheckInTime) }}
+                </div>
+              </div>
+            </div>
+
+            <div class="time-row">
+              <mat-icon aria-hidden="true">logout</mat-icon>
+              <div>
+                <div class="label">Check-out</div>
+                <div class="value">
+                  {{ formatTime(r.checkOutTime ?? r.CheckOutTime) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="hours">
+              Total: {{ formatHours(r.totalHoursWorked ?? r.TotalHoursWorked) }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <div class="empty">No history found</div>
+    </ng-template>
+  </div>
+
+  <mat-card class="paginator-card">
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageIndex]="pageIndex"
+      (page)="onPage($event)"
+    >
+    </mat-paginator>
+  </mat-card>
 </div>

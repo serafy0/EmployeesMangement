@@ -1,13 +1,103 @@
-<h2>Daily Attendance (Admin)</h2>
-<div>
-  <label>Target date (ISO):</label>
-  <input [(ngModel)]="date" placeholder="YYYY-MM-DD" />
-  <button (click)="load()">Load</button>
+<div class="page-shell">
+  <mat-card
+    class="header-card"
+    role="region"
+    aria-label="Daily attendance header"
+  >
+    <div class="header-grid">
+      <div class="header-left">
+        <h2>Daily Attendance</h2>
+        <p class="muted">Choose a date to view attendance for that day</p>
+      </div>
+
+      <div class="header-right">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Choose a date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="dateModel"
+            (dateChange)="onDateChange($event.value)"
+          />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="content">
+    <div *ngIf="loading" class="center-spinner">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="36"
+      ></mat-progress-spinner>
+    </div>
+
+    <div *ngIf="!loading && attendance?.length === 0" class="empty">
+      No attendance records for this date
+    </div>
+
+    <div class="cards-grid" *ngIf="attendance?.length">
+      <mat-card
+        *ngFor="let a of attendance"
+        class="attendance-card"
+        role="article"
+      >
+        <mat-card-content>
+          <div class="card-top">
+            <div class="name">{{ a.firstName }} {{ a.lastName }}</div>
+
+            <div class="status">
+              <mat-icon
+                *ngIf="a.isPresent"
+                class="status-icon"
+                aria-hidden="true"
+                >check_circle</mat-icon
+              >
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="times">
+            <div class="time-row">
+              <mat-icon aria-hidden="true" class="time-icon">login</mat-icon>
+              <div>
+                <div class="label">Check-in</div>
+                <div class="value">{{ formatTimeIso(a.checkInTime) }}</div>
+              </div>
+            </div>
+
+            <div class="time-row">
+              <mat-icon aria-hidden="true" class="time-icon">logout</mat-icon>
+              <div>
+                <div class="label">Check-out</div>
+                <div class="value">{{ formatTimeIso(a.checkOutTime) }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bottom">
+            <div class="hours">Total: {{ displayTotalForRecord(a) }}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="paginator-card">
+      <mat-paginator
+        [length]="totalCount"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="pageIndex"
+        (page)="onPage($event)"
+      >
+      </mat-paginator>
+    </mat-card>
+  </div>
 </div>
-
-<h3>Attendance List</h3>
-<pre *ngIf="attendance">{{ attendance | json }}</pre>
-
-<h3>Summaries</h3>
-<button (click)="loadSummaries()">Load summaries</button>
-<pre *ngIf="summaries">{{ summaries | json }}</pre>
