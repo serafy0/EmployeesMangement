@@ -22,7 +22,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     FormsModule,
     MatCardModule,
     MatButtonModule,

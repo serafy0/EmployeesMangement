@@ -29,8 +29,14 @@
         </button>
       </div>
 
-      <div class="table-wrap">
-        <table mat-table [dataSource]="data" matSort class="mat-elevation-z1">
+      <div class="table-wrap" *ngIf="!isMobile && !isTablet">
+        <table
+          mat-table
+          [dataSource]="data"
+          matSort
+          (matSortChange)="onSort($event)"
+          class="mat-elevation-z1"
+        >
           <ng-container matColumnDef="firstName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header="firstName">
               First
@@ -108,11 +114,57 @@
         </div>
       </div>
 
+      <div class="mobile-cards" *ngIf="isMobile || isTablet">
+        <div class="mobile-grid">
+          <mat-card class="mobile-card" *ngFor="let e of data">
+            <mat-card-content>
+              <div class="mobile-row-top">
+                <div class="name">{{ e.firstName }} {{ e.lastName }}</div>
+                <div class="mobile-actions">
+                  <button
+                    mat-icon-button
+                    (click)="onManageSignature(e)"
+                    matTooltip="Signature"
+                  >
+                    <mat-icon>image</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="onDelete(e)"
+                    matTooltip="Delete"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mobile-meta">
+                <div><strong>ID:</strong> {{ e.nationalId }}</div>
+                <div><strong>Phone:</strong> {{ e.phoneNumber }}</div>
+                <div><strong>Age:</strong> {{ e.age }}</div>
+              </div>
+
+              <div class="mobile-edit-cta">
+                <button mat-flat-button color="primary" (click)="onEdit(e)">
+                  Edit
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div class="loading" *ngIf="loading">
+          <mat-spinner diameter="36"></mat-spinner>
+        </div>
+      </div>
+
       <mat-paginator
         [length]="result?.totalCount ?? 0"
         [pageIndex]="pageIndex"
         [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25, 50]"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPage($event)"
       >
       </mat-paginator>
     </mat-card-content>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,12 +6,8 @@ import { EmployeeService } from '../../../core/services/employee/employee.servic
 import { ApiResult } from '../../../core/models/ApiResult.model';
 import { EmployeeDTOForAdmins } from '../../../core/models/employee-dto-for-admins.model';
 import { MatTableModule } from '@angular/material/table';
-import {
-  MatPaginatorModule,
-  MatPaginator,
-  PageEvent,
-} from '@angular/material/paginator';
-import { MatSortModule, MatSort, Sort } from '@angular/material/sort';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -20,6 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
 
 @Component({
   selector: 'app-employees-table',
@@ -38,11 +37,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatCardModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatDialogModule,
+    MatDividerModule,
   ],
   templateUrl: './employees-table.component.html',
   styleUrls: ['./employees-table.component.scss'],
 })
-export class EmployeesTableComponent implements OnInit, AfterViewInit {
+export class EmployeesTableComponent implements OnInit {
   displayedColumns = [
     'firstName',
     'lastName',
@@ -54,6 +55,7 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
   ];
   data: EmployeeDTOForAdmins[] = [];
   result: ApiResult<EmployeeDTOForAdmins> | null = null;
+
   columns = [
     'firstName',
     'lastName',
@@ -68,42 +70,32 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
 
   pageIndex = 0;
   pageSize = 10;
-
+  pageSizeOptions = [5, 10, 25, 50];
   sortColumn: string | null = null;
   sortOrder: 'ASC' | 'DESC' | null = null;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  isMobile = false;
+  isTablet = false;
 
   constructor(
     private svc: EmployeeService,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
+    this.updateSize(window.innerWidth);
     this.load();
   }
 
-  ngAfterViewInit() {
-    if (this.paginator) {
-      this.paginator.page.subscribe((pe: PageEvent) => {
-        this.pageIndex = pe.pageIndex;
-        this.pageSize = pe.pageSize;
-        this.load();
-      });
-    }
-    if (this.sort) {
-      this.sort.sortChange.subscribe((s: Sort) => {
-        this.pageIndex = 0;
-        this.paginator && (this.paginator.pageIndex = 0);
-        this.sortColumn = s.active || null;
-        this.sortOrder = s.direction
-          ? (s.direction.toUpperCase() as 'ASC' | 'DESC')
-          : null;
-        this.load();
-      });
-    }
+  @HostListener('window:resize', ['$event'])
+  onResize(e: any) {
+    this.updateSize(e.target.innerWidth);
+  }
+  private updateSize(width: number) {
+    this.isMobile = width < 720;
+    this.isTablet = width >= 720 && width < 1024;
   }
 
   load() {
@@ -121,7 +113,9 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
         next: (res) => {
           this.loading = false;
           this.result = res;
-          this.data = res.data;
+          this.data = res.data ?? [];
+          this.pageIndex = res.pageIndex ?? this.pageIndex;
+          this.pageSize = res.pageSize ?? this.pageSize;
         },
         error: (err) => {
           this.loading = false;
@@ -134,7 +128,6 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
 
   applyFilter() {
     this.pageIndex = 0;
-    this.paginator && (this.paginator.pageIndex = 0);
     this.load();
   }
 
@@ -144,24 +137,51 @@ export class EmployeesTableComponent implements OnInit, AfterViewInit {
     this.applyFilter();
   }
 
+  onPage(e: PageEvent) {
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.load();
+  }
+
+  onSort(s: Sort) {
+    this.pageIndex = 0;
+    this.sortColumn = s.active || null;
+    this.sortOrder = s.direction
+      ? (s.direction.toUpperCase() as 'ASC' | 'DESC')
+      : null;
+    this.load();
+  }
+
   onCreate() {
     this.router.navigate(['/employees/new']);
   }
 
-  onEdit(e: EmployeeDTOForAdmins) {
+  onEdit(e: EmployeeDTOForAdmins | null) {
+    if (!e) return;
     this.router.navigate([`/employees/${e.id}/edit`]);
   }
 
-  onManageSignature(e: EmployeeDTOForAdmins) {
+  onManageSignature(e: EmployeeDTOForAdmins | null) {
+    if (!e) return;
     this.router.navigate([`/employees/${e.id}/signature`]);
   }
 
-  onDelete(e: EmployeeDTOForAdmins) {
-    if (!confirm(`Delete ${e.firstName} ${e.lastName}?`)) return;
-    this.svc.deleteEmployee(e.id).subscribe({
-      next: () => this.load(),
-      error: () =>
-        this.snack.open('Failed to delete', 'Close', { duration: 3000 }),
+  onDelete(e: EmployeeDTOForAdmins | null) {
+    if (!e) return;
+    const ref = this.dialog.open(ConfirmDeleteDialogComponent, {
+      width: '380px',
+      data: { name: `${e.firstName} ${e.lastName}` },
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.svc.deleteEmployee(e.id).subscribe({
+        next: () => {
+          this.snack.open('Deleted', 'Close', { duration: 2500 });
+          this.load();
+        },
+        error: () =>
+          this.snack.open('Failed to delete', 'Close', { duration: 3000 }),
+      });
     });
   }
 }
