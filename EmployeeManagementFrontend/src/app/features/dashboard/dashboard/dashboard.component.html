@@ -1,22 +1,58 @@
-<div>
-  <h2>Welcome to your Dashboard</h2>
-  <div *ngIf="currentUser">
-    <h3>Your Information:</h3>
-    <pre>{{ currentUser | json }}</pre>
+<section class="dashboard-shell">
+  <mat-card class="welcome-card" role="region" aria-label="Welcome">
+    <div class="welcome">
+      <div class="greeting">
+        <h1>Hey{{ currentUser ? ", " + currentUser.firstName : "" }} 👋</h1>
+        <p class="subtitle">Welcome back — quick links to your workspace.</p>
+      </div>
 
-    <div
-      *ngIf="currentUser.roles.includes('Admin')"
-      style="border: 1px solid blue; padding: 10px; margin-top: 10px"
-    >
-      <p><strong>Admin Controls:</strong> You can manage employees here.</p>
+      <div class="actions">
+        <ng-container *ngIf="primaryAction">
+          <button
+            mat-flat-button
+            color="primary"
+            [routerLink]="primaryAction.route"
+          >
+            <mat-icon aria-hidden="false" class="btn-icon">{{
+              primaryAction.icon
+            }}</mat-icon>
+            {{ primaryAction.label }}
+          </button>
+        </ng-container>
+
+        <button
+          mat-icon-button
+          aria-label="Logout"
+          (click)="logout()"
+          matTooltip="Logout"
+        >
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
     </div>
-    <div
-      *ngIf="currentUser.roles.includes('Employee')"
-      style="border: 1px solid green; padding: 10px; margin-top: 10px"
-    >
-      <p><strong>Employee Actions:</strong> Check-in and view your profile.</p>
-    </div>
+  </mat-card>
+
+  <div class="grid-wrap" role="list">
+    <ng-container *ngFor="let tile of tiles">
+      <mat-card
+        class="tile"
+        (click)="navigate(tile.route)"
+        role="listitem"
+        tabindex="0"
+      >
+        <div class="tile-inner">
+          <div class="tile-icon">
+            <mat-icon aria-hidden="false" aria-label="{{ tile.label }}">{{
+              tile.icon
+            }}</mat-icon>
+          </div>
+
+          <div class="tile-info">
+            <div class="tile-label">{{ tile.label }}</div>
+            <!-- <a mat-button class="tile-go" [routerLink]="tile.route">Open</a> -->
+          </div>
+        </div>
+      </mat-card>
+    </ng-container>
   </div>
-
-  <button (click)="logout()">Logout</button>
-</div>
+</section>
