@@ -1,6 +1,27 @@
-# Current Screen shots
 
-<img width="987" height="925" alt="Screenshot 2025-09-09 224405" src="https://github.com/user-attachments/assets/e6b725e2-af33-4f97-8a0e-eed21d6d24c0" />
-<img width="1916" height="668" alt="Screenshot 2025-09-09 224139" src="https://github.com/user-attachments/assets/d28c8006-9d7a-45ef-9181-ecae7ad6a97b" />
-<img width="1900" height="917" alt="Screenshot 2025-09-09 223950" src="https://github.com/user-attachments/assets/6eb5981e-5ebd-4b71-920a-a4bbeb5dde35" />
-<img width="629" height="835" alt="Screenshot 2025-09-09 223748" src="https://github.com/user-attachments/assets/5a9c811f-f59c-4254-b891-27da48a6c4c6" />
+# Screenshots
+
+## Admin ponit of view
+
+  <img width="1895" height="920" alt="Admin view 1" src="https://github.com/user-attachments/assets/729bcbdf-b6f4-47f6-a9e9-31ebf42f098f" />
+  
+  
+  
+  <img width="1898" height="739" alt="Admin view 2" src="https://github.com/user-attachments/assets/5d63a386-237c-45e9-8775-0daef491201b" />
+  <img width="763" height="912" alt="admin view 3" src="https://github.com/user-attachments/assets/e99b8558-8e0b-440d-8076-fbe8964d0f0a" />
+  <img width="1911" height="717" alt="Admin view 4" src="https://github.com/user-attachments/assets/5656c1cc-7be6-4501-ba8c-4bfe4540c9eb" />
+  <img width="1883" height="895" alt="Admin View 5" src="https://github.com/user-attachments/assets/35325eda-9601-43fc-9efe-ae2042024846" />
+  <img width="1764" height="651" alt="Admin view 6" src="https://github.com/user-attachments/assets/f97fa8a1-71fa-4804-bade-b7f980c2df75" />
+
+
+
+## Employee Point of View
+
+
+  <img width="1898" height="785" alt="Employee View 3" src="https://github.com/user-attachments/assets/4444023c-22c8-4cfc-9071-ffdbc8642dda" />
+  <img width="1874" height="523" alt="Employee View 1" src="https://github.com/user-attachments/assets/e90a222d-8821-4c06-bbad-3591994b8b4f" />
+  <img width="1874" height="749" alt="Employee View 2" src="https://github.com/user-attachments/assets/13213bf5-d53a-4eb0-8f12-5d9510c1037b" />
+<img width="1845" height="733" alt="Employee View 4" src="https://github.com/user-attachments/assets/b78cdebb-7f01-4c34-be34-f1deb106dc15" />
+
+
+
