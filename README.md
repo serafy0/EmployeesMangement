@@ -1,3 +1,37 @@
+# How to run
+
+## clone this repo
+```bash
+git clone https://github.com/serafy0/EemployeesMangement.git
+cd EemployeesMangement
+```
+
+## Backend setup
+```
+cd EmployeeManagementBackend/EmployeeManagementBackend
+```
+ setup your local database in [ConnectionStrings](https://github.com/serafy0/EemployeesMangement/blob/ff0e451179d5cf950e39ade646979b6ea9d715e6/EmployeeManagementBackend/EmployeeManagementBackend/appsettings.json#L10C18-L10C19) and preffered admin phone number and password in appsetting.json
+
+### run database migrations
+```bash
+dotnet ef database update
+```
+### start backend
+```
+dotnet run --launch-profile https
+```
+backend docs should be running on `https://localhost:7059/swagger`
+
+## frontend setup
+
+```bash
+cd EmployeeManagementFrontend
+npm install
+ng serve
+```
+it should be running on `http://localhost:4200`
+
+
 
 # Screenshots
 
