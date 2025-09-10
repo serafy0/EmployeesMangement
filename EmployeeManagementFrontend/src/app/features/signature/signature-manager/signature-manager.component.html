@@ -1,20 +1,9 @@
 <div class="page-shell">
   <mat-card class="card">
-    <mat-card-title>Signature Manager</mat-card-title>
-    <mat-card-subtitle *ngIf="userId"
-      >Managing signature for user</mat-card-subtitle
-    >
-
     <mat-card-content>
       <div class="preview-row" *ngIf="signatureUrl; else noSig">
         <div class="preview-box">
           <img [src]="signatureUrl" alt="signature" />
-        </div>
-        <div class="preview-actions">
-          <button mat-stroked-button color="primary" (click)="openSignature()">
-            <mat-icon>open_in_new</mat-icon>
-            Open signature
-          </button>
         </div>
       </div>
 

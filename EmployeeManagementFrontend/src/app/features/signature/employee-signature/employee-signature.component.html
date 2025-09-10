@@ -1,12 +1,10 @@
 <div class="page-shell">
   <mat-card class="card">
-    <mat-card-title>My Signature</mat-card-title>
     <mat-card-content>
       <div class="preview-row" *ngIf="signatureUrl; else addArea">
         <div class="preview-box">
           <img [src]="signatureUrl" alt="signature" />
         </div>
-
         <div class="preview-actions" *ngIf="isAdmin">
           <button mat-stroked-button color="primary" (click)="openSignature()">
             <mat-icon>open_in_new</mat-icon>
@@ -67,9 +65,8 @@
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="drawPanelOpen">
+  <div *ngIf="drawPanelOpen" class="draw-wrapper">
     <mat-card class="card draw-card">
-      <mat-card-title>Draw your signature</mat-card-title>
       <mat-card-content>
         <div class="canvas-wrap">
           <canvas #canvas></canvas>

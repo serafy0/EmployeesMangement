@@ -12,13 +12,10 @@
 
         <ng-template #statusTpl>
           <div *ngIf="isCheckedIn; else notCheckedIn">
-            <mat-icon class="big-icon">check_circle</mat-icon>
-            <h2 class="title">You are checked in</h2>
-            <div class="sub">
-              <span *ngIf="checkInTimeCairo"
-                >Checked in at {{ checkInTimeCairo }}</span
-              >
-            </div>
+            <h2 class="title">
+              You already checked in at
+              {{ checkInTimeCairo | date : "h:mm a" : "Africa/Cairo" }}
+            </h2>
 
             <div class="actions">
               <button

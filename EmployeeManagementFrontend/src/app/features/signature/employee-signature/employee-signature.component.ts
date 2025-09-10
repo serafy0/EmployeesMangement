@@ -43,7 +43,6 @@ export class EmployeeSignatureComponent
   fileInputRef!: ElementRef<HTMLInputElement>;
   @ViewChild('canvas', { static: false })
   canvasRef!: ElementRef<HTMLCanvasElement>;
-
   signatureUrl: string | null = null;
   file: File | null = null;
   uploading = false;
@@ -115,7 +114,6 @@ export class EmployeeSignatureComponent
       });
       return;
     }
-
     this.uploading = true;
     this.svc.uploadFile(this.file).subscribe({
       next: (res: any) => {
