@@ -67,4 +67,8 @@ export class AttendanceService {
   getAttendanceSummaries(): Observable<any> {
     return this.http.get(`${this.base}/attendance-summaries`);
   }
+
+  isCheckedIn(): Observable<any> {
+    return this.http.get(`${this.base}/is-checked-in`);
+  }
 }

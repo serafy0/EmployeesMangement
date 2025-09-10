@@ -12,17 +12,22 @@
             mat-flat-button
             color="primary"
             [routerLink]="primaryAction.route"
+            class="primary-action"
+            [attr.aria-label]="primaryAction.label"
           >
-            <mat-icon aria-hidden="false" class="btn-icon">{{
-              primaryAction.icon
-            }}</mat-icon>
+            <mat-icon
+              [attr.aria-hidden]="'false'"
+              [attr.aria-label]="primaryAction.label"
+              class="btn-icon"
+              >{{ primaryAction.icon }}</mat-icon
+            >
             {{ primaryAction.label }}
           </button>
         </ng-container>
 
         <button
           mat-icon-button
-          aria-label="Logout"
+          [attr.aria-label]="'Logout'"
           (click)="logout()"
           matTooltip="Logout"
         >
@@ -41,15 +46,26 @@
         tabindex="0"
       >
         <div class="tile-inner">
-          <div class="tile-icon">
-            <mat-icon aria-hidden="false" aria-label="{{ tile.label }}">{{
-              tile.icon
-            }}</mat-icon>
+          <div class="tile-icon" aria-hidden="true">
+            <mat-icon
+              [attr.aria-hidden]="'true'"
+              [attr.aria-label]="tile.label"
+              >{{ tile.icon }}</mat-icon
+            >
           </div>
 
           <div class="tile-info">
             <div class="tile-label">{{ tile.label }}</div>
-            <!-- <a mat-button class="tile-go" [routerLink]="tile.route">Open</a> -->
+
+            <button
+              mat-button
+              class="tile-go"
+              [routerLink]="tile.route"
+              (click)="$event.stopPropagation()"
+              [attr.aria-label]="'Open ' + tile.label"
+            >
+              Open
+            </button>
           </div>
         </div>
       </mat-card>

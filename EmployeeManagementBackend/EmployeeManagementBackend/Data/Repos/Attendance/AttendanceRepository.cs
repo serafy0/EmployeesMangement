@@ -1,6 +1,4 @@
-﻿using EmployeeManagementBackend.Data.Models;
-using EmployeeManagementBackend.Data.Repos.Attendance;
-using EmployeeManagementBackend.DTOs.Attendance;
+﻿using EmployeeManagementBackend.DTOs.Attendance;
 using EmployeeManagementBackend.Utils;
 using Microsoft.EntityFrameworkCore;
 using TextingBackendApi.Data.Context;
@@ -197,13 +195,10 @@ namespace EmployeeManagementBackend.Data.Repos.Attendance
 
             result.TotalEmployees = employeeIds.Count;
 
-            // Employees present today
             result.EmployeesPresentToday = await _context.Attendances.CountAsync(a =>
                 a.Date == today && a.IsPresent
             );
 
-            // --- Compute average hours per employee (in-memory) ---
-            // Fetch only necessary attendance fields for employees where TotalHoursWorked is set
             var attendanceRows = await _context
                 .Attendances.Where(a =>
                     employeeIds.Contains(a.EmployeeId) && a.TotalHoursWorked != null
@@ -211,7 +206,6 @@ namespace EmployeeManagementBackend.Data.Repos.Attendance
                 .Select(a => new { a.EmployeeId, a.TotalHoursWorked })
                 .ToListAsync();
 
-            // Sum total hours across all fetched rows
             var totalHoursAll = attendanceRows
                 .Where(x => x.TotalHoursWorked.HasValue)
                 .Sum(x => x.TotalHoursWorked!.Value.TotalHours);
@@ -221,7 +215,6 @@ namespace EmployeeManagementBackend.Data.Repos.Attendance
                     ? Math.Round(totalHoursAll / result.TotalEmployees, 2)
                     : 0.0;
 
-            // Keep Top lists empty (we removed the "top 3" computation)
 
             return result;
         }

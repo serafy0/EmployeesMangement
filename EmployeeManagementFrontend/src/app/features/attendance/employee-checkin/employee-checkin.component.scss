@@ -1,0 +1,68 @@
+/* features/attendance/employee-checkin/employee-checkin.component.scss */
+:host {
+  display: block;
+}
+
+.page-shell {
+  min-height: calc(100vh - 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+
+.checkin-card {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 8px;
+  text-align: center;
+  padding: 28px 20px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.big-icon {
+  font-size: 64px;
+  color: #1976d2;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.sub {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-text {
+  margin-left: 8px;
+}
+
+/* small screens */
+@media (max-width: 420px) {
+  .checkin-card {
+    padding: 20px 12px;
+  }
+
+  .big-icon {
+    font-size: 52px;
+  }
+}

@@ -235,5 +235,29 @@ namespace EmployeeManagementBackend.Controllers
 
             return Ok(insights);
         }
+
+        [HttpGet("is-checked-in")]
+        [Authorize(Roles = Roles.Employee)]
+        public async Task<IActionResult> IsCheckedInToday()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var cairoNow = TimeHelper.GetCairoNow();
+            var today = DateOnly.FromDateTime(cairoNow);
+
+            var attendance = await _attendanceRepo.GetByEmployeeAndDateAsync(user.Id, today);
+            var isCheckedIn = attendance != null && attendance.CheckInTime != null;
+
+            return Ok(new
+            {
+                isCheckedIn = isCheckedIn,
+                checkInTimeUtc = attendance?.CheckInTime,
+                checkInTimeCairo = attendance?.CheckInTime.HasValue == true
+                    ? TimeHelper.ConvertUtcToCairo(attendance!.CheckInTime.Value)
+                    : (DateTime?)null
+            });
+        }
+
     }
 }
