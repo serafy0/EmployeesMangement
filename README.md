@@ -10,7 +10,7 @@ cd EemployeesMangement
 ```
 cd EmployeeManagementBackend/EmployeeManagementBackend
 ```
- setup your local database in [ConnectionStrings](https://github.com/serafy0/EemployeesMangement/blob/ff0e451179d5cf950e39ade646979b6ea9d715e6/EmployeeManagementBackend/EmployeeManagementBackend/appsettings.json#L10C18-L10C19) and preffered admin phone number and password in appsetting.json
+ setup your local database in [ConnectionStrings](https://github.com/serafy0/EemployeesMangement/blob/ff0e451179d5cf950e39ade646979b6ea9d715e6/EmployeeManagementBackend/EmployeeManagementBackend/appsettings.json#L10C18-L10C19) and preferred admin phone number and password in appsetting.json
 
 ### run database migrations
 ```bash
