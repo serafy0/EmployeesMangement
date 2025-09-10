@@ -1,0 +1,19 @@
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.sig-canvas {
+  border: 1px solid #ddd;
+  width: 100%;
+  background: #fff;
+  touch-action: none;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

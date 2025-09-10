@@ -1,15 +1,75 @@
-<h2>Signature Manager</h2>
-<div *ngIf="userId">Managing signature for user: {{ userId }}</div>
-<div *ngIf="signatureUrl">
-  <strong>Current signature URL:</strong>
-  <a [href]="signatureUrl" target="_blank">{{ signatureUrl }}</a>
-</div>
+<div class="page-shell">
+  <mat-card class="card">
+    <mat-card-title>Signature Manager</mat-card-title>
+    <mat-card-subtitle *ngIf="userId"
+      >Managing signature for user</mat-card-subtitle
+    >
 
-<div>
-  <label>Upload file</label>
-  <input type="file" (change)="onFile($event)" />
-  <button (click)="upload()" [disabled]="!file">Upload</button>
-  <button (click)="delete()" [disabled]="!signatureUrl">Delete</button>
-</div>
+    <mat-card-content>
+      <div class="preview-row" *ngIf="signatureUrl; else noSig">
+        <div class="preview-box">
+          <img [src]="signatureUrl" alt="signature" />
+        </div>
+        <div class="preview-actions">
+          <button mat-stroked-button color="primary" (click)="openSignature()">
+            <mat-icon>open_in_new</mat-icon>
+            Open signature
+          </button>
+        </div>
+      </div>
 
-<pre *ngIf="result">{{ result | json }}</pre>
+      <ng-template #noSig>
+        <div class="no-sign">No signature uploaded</div>
+        <mat-divider></mat-divider>
+      </ng-template>
+
+      <div class="upload-row">
+        <input
+          #fileInputAdmin
+          type="file"
+          accept=".png,.jpg,.jpeg,.svg"
+          (change)="onFileSelected($event)"
+          hidden
+        />
+
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="triggerFileChoose()"
+          [disabled]="uploading || loading"
+        >
+          <mat-icon>folder_open</mat-icon>
+          Choose file
+        </button>
+
+        <div class="file-name" *ngIf="file">{{ file.name }}</div>
+        <div class="spacer"></div>
+
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="upload()"
+          [disabled]="!file || uploading"
+        >
+          <mat-icon>cloud_upload</mat-icon>
+          {{ uploading ? "Uploading…" : "Upload" }}
+        </button>
+
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="delete()"
+          [disabled]="!signatureUrl || loading"
+        >
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
+
+      <mat-progress-bar
+        *ngIf="uploading || loading"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+</div>

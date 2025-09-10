@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -22,6 +22,20 @@ export class SignatureService {
     fd.append('file', file);
     const params = userId ? new HttpParams().set('userId', userId) : undefined;
     return this.http.post(`${this.base}`, fd, { params });
+  }
+
+  uploadFileWithProgress(
+    file: File,
+    userId?: string
+  ): Observable<HttpEvent<any>> {
+    const fd = new FormData();
+    fd.append('file', file);
+    const params = userId ? new HttpParams().set('userId', userId) : undefined;
+    return this.http.post<any>(`${this.base}`, fd, {
+      params,
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 
   uploadBase64(base64: string, userId?: string): Observable<any> {

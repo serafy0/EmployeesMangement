@@ -1,14 +1,91 @@
-<h2>My Signature</h2>
-<div *ngIf="signatureUrl">
-  <a [href]="signatureUrl" target="_blank">{{ signatureUrl }}</a>
-</div>
+<div class="page-shell">
+  <mat-card class="card">
+    <mat-card-title>My Signature</mat-card-title>
+    <mat-card-content>
+      <div class="preview-row" *ngIf="signatureUrl; else addArea">
+        <div class="preview-box">
+          <img [src]="signatureUrl" alt="signature" />
+        </div>
 
-<div>
-  <input type="file" (change)="onFile($event)" />
-  <button (click)="upload()" [disabled]="!file">Upload</button>
-  <button (click)="delete()" [disabled]="!signatureUrl">Delete</button>
-</div>
+        <div class="preview-actions" *ngIf="isAdmin">
+          <button mat-stroked-button color="primary" (click)="openSignature()">
+            <mat-icon>open_in_new</mat-icon>
+            Open signature
+          </button>
+        </div>
+      </div>
 
-<div *ngIf="result">
-  <pre>{{ result | json }}</pre>
+      <ng-template #addArea>
+        <div class="no-sign">No signature uploaded yet.</div>
+        <mat-divider></mat-divider>
+        <div class="upload-row">
+          <input
+            #fileInput
+            type="file"
+            accept=".png,.jpg,.jpeg,.svg"
+            (change)="onFileSelected($event)"
+            hidden
+          />
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="triggerFileChoose()"
+            [disabled]="!canAdd"
+          >
+            <mat-icon>folder_open</mat-icon>
+            Choose file
+          </button>
+
+          <div class="file-name" *ngIf="file">{{ file.name }}</div>
+          <div class="spacer"></div>
+
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="uploadFile()"
+            [disabled]="!file || uploading || !canAdd"
+          >
+            <mat-icon>cloud_upload</mat-icon>
+            {{ uploading ? "Uploading…" : "Upload" }}
+          </button>
+
+          <button
+            mat-stroked-button
+            color="accent"
+            (click)="toggleDrawPanel()"
+            [disabled]="!canAdd"
+          >
+            <mat-icon>{{ drawPanelOpen ? "close" : "edit" }}</mat-icon>
+            {{ drawPanelOpen ? "Close" : "Draw signature" }}
+          </button>
+        </div>
+        <mat-progress-bar
+          *ngIf="uploading || loading"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="drawPanelOpen">
+    <mat-card class="card draw-card">
+      <mat-card-title>Draw your signature</mat-card-title>
+      <mat-card-content>
+        <div class="canvas-wrap">
+          <canvas #canvas></canvas>
+        </div>
+        <div class="canvas-actions">
+          <button mat-stroked-button (click)="clearCanvas()">
+            <mat-icon>refresh</mat-icon>
+            Clear
+          </button>
+          <div class="spacer"></div>
+          <button mat-flat-button color="primary" (click)="saveDrawing()">
+            <mat-icon>save</mat-icon>
+            Save
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
