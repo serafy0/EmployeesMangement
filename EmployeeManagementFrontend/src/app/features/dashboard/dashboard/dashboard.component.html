@@ -56,16 +56,6 @@
 
           <div class="tile-info">
             <div class="tile-label">{{ tile.label }}</div>
-
-            <button
-              mat-button
-              class="tile-go"
-              [routerLink]="tile.route"
-              (click)="$event.stopPropagation()"
-              [attr.aria-label]="'Open ' + tile.label"
-            >
-              Open
-            </button>
           </div>
         </div>
       </mat-card>
