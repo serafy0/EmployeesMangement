@@ -49,7 +49,7 @@
         <div class="row">
           <mat-form-field appearance="outline" class="flex-2">
             <mat-label>National ID</mat-label>
-            <input matInput formControlName="nationalId" />
+            <input matInput minlength="14" maxlength="14" formControlName="nationalId" />
             <mat-error *ngIf="controls['nationalId']?.hasError('required')"
               >Required</mat-error
             >

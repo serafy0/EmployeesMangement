@@ -1,5 +1,4 @@
-﻿// Controllers/AttendanceController.cs
-using EmployeeManagementBackend.BackgroundServices.AttendanceJobService;
+﻿using EmployeeManagementBackend.BackgroundServices.AttendanceJobService;
 using EmployeeManagementBackend.Data.Models;
 using EmployeeManagementBackend.Data.Repos.Attendance;
 using EmployeeManagementBackend.Utils;
@@ -40,11 +39,8 @@ namespace EmployeeManagementBackend.Controllers
 
             var cairoNow = TimeHelper.GetCairoNow();
             var today = DateOnly.FromDateTime(cairoNow);
-            //var checkInStart = new TimeSpan(7, 30, 0);
-            //var checkInEnd = new TimeSpan(9, 0, 0);
-            //TODO : Change back to 7:00 - 9:00
-            var checkInStart = new TimeSpan(1, 0, 0);
-            var checkInEnd = new TimeSpan(10, 0, 0);
+            var checkInStart = new TimeSpan(7, 30, 0);
+            var checkInEnd = new TimeSpan(9, 0, 0);
 
             if (cairoNow.TimeOfDay < checkInStart || cairoNow.TimeOfDay > checkInEnd)
             {
@@ -75,14 +71,15 @@ namespace EmployeeManagementBackend.Controllers
 
             attendance.CheckInTime = DateTime.UtcNow;
             attendance.IsPresent = true;
-            var jobDelay = TimeSpan.FromMinutes(3);
+            var jobDelay = TimeSpan.FromSeconds(60);
+
+            await _attendanceRepo.SaveChangesAsync();
 
             _backgroundJobClient.Schedule<IAttendanceJobService>(
                 svc => svc.AutoCheckoutAsync(attendance.Id),
                 jobDelay
             );
 
-            await _attendanceRepo.SaveChangesAsync();
 
             return Ok(
                 new

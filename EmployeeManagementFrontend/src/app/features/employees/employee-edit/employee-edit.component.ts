@@ -46,7 +46,7 @@ export class EmployeeEditComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern('^\\+?[1-9]\\d{1,14}$')],
       ],
-      nationalId: ['', [Validators.required, Validators.minLength(14)]],
+      nationalId: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]],
       age: [18, [Validators.required, Validators.min(16)]],
       electronicSignature: [''],
     });
