@@ -55,7 +55,12 @@ it should be running on `http://localhost:4200`
   <img width="1898" height="785" alt="Employee View 3" src="https://github.com/user-attachments/assets/4444023c-22c8-4cfc-9071-ffdbc8642dda" />
   <img width="1874" height="523" alt="Employee View 1" src="https://github.com/user-attachments/assets/e90a222d-8821-4c06-bbad-3591994b8b4f" />
   <img width="1874" height="749" alt="Employee View 2" src="https://github.com/user-attachments/assets/13213bf5-d53a-4eb0-8f12-5d9510c1037b" />
+  
 <img width="1845" height="733" alt="Employee View 4" src="https://github.com/user-attachments/assets/b78cdebb-7f01-4c34-be34-f1deb106dc15" />
 
+## Database Schema
+
+
+<img width="842" height="665" alt="Screenshot 2025-09-11 083245" src="https://github.com/user-attachments/assets/080f6114-e192-434c-9aa6-c3dc6401a48e" />
 
 
