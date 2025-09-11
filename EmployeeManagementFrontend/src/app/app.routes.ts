@@ -12,6 +12,7 @@ import { EmployeeCheckinComponent } from './features/attendance/employee-checkin
 import { EmployeeHistoryComponent } from './features/attendance/employee-history/employee-history.component';
 import { EmployeeProfileComponent } from './features/employees/employee-profile/employee-profile.component';
 import { EmployeeSignatureComponent } from './features/signature/employee-signature/employee-signature.component';
+import { WeeklyAttendanceComponent } from './features/attendance/weekly-attendance/weekly-attendance.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -62,6 +63,12 @@ export const routes: Routes = [
   {
     path: 'attendance/daily',
     component: DailyAttendanceComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'attendance/weekly',
+    component: WeeklyAttendanceComponent,
     canActivate: [authGuard],
     data: { roles: ['Admin'] },
   },

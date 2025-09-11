@@ -48,6 +48,11 @@ export class DashboardComponent {
           label: 'Daily Attendance',
           route: '/attendance/daily',
           icon: 'today',
+        },
+        {
+          label: 'Weekly Attendance',
+          route: '/attendance/weekly',
+          icon: 'calendar_today',
         }
       );
     }

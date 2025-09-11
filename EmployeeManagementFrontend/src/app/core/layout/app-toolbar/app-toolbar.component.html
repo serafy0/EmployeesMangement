@@ -13,6 +13,7 @@
       <button mat-button routerLink="/employees">Employees</button>
       <button mat-button routerLink="/employees/new">Add Employees</button>
       <button mat-button routerLink="/attendance/daily">Daily</button>
+      <button mat-button routerLink="/attendance/weekly">Weekly</button>
     </ng-container>
 
     <ng-container *ngIf="auth.currentUserValue?.roles?.includes('Employee')">
@@ -46,6 +47,9 @@
         </button>
         <button mat-menu-item routerLink="/attendance/daily">
           <mat-icon>today</mat-icon> Daily
+        </button>
+        <button mat-menu-item routerLink="/attendance/weekly">
+          <mat-icon>calendar_today</mat-icon> Weekly
         </button>
       </ng-container>
 

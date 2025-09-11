@@ -74,11 +74,9 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHangfire(cfg => cfg.UseMemoryStorage());
 builder.Services.AddHangfireServer();
 
-// register the job service (Hangfire will call this)
 builder.Services.AddScoped<IAttendanceJobService, AttendanceJobService>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 
-// Add custom services
 builder.Services.AddScoped<JwtHandler>();
 
 

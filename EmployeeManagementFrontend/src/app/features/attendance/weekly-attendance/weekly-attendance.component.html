@@ -1,0 +1,73 @@
+<div class="page-shell">
+  <mat-card
+    class="header-card"
+    role="region"
+    aria-label="Weekly attendance header"
+  >
+    <div class="header-grid">
+      <div class="header-left">
+        <h2>Weekly Attendance</h2>
+        <p class="muted">View total hours per employee for the selected week</p>
+      </div>
+      <div class="header-right">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Week start</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [(ngModel)]="dateModel"
+            (dateChange)="onDateChange($event.value)"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="content">
+    <div *ngIf="loading" class="center-spinner">
+      <mat-progress-spinner
+        mode="indeterminate"
+        diameter="36"
+      ></mat-progress-spinner>
+    </div>
+
+    <div *ngIf="!loading && rows?.length === 0" class="empty">
+      No data for this week
+    </div>
+
+    <div class="cards-grid" *ngIf="rows?.length">
+      <mat-card *ngFor="let r of rows" class="attendance-card">
+        <mat-card-content>
+          <div class="card-top">
+            <div class="name">
+              {{ r.firstName ?? r.FirstName }} {{ r.lastName ?? r.LastName }}
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="card-body">
+            <div class="label">Total hours</div>
+            <div class="value">
+              {{ formatTotalHours(r.totalHours ?? r.TotalHours) }}
+            </div>
+            <div class="sub">{{ formatRangeLabel() }}</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <mat-card class="paginator-card">
+      <mat-paginator
+        [length]="totalCount"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="pageIndex"
+        (page)="onPage($event)"
+      ></mat-paginator>
+    </mat-card>
+  </div>
+</div>
