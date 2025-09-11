@@ -32,6 +32,12 @@ ng serve
 it should be running on `http://localhost:4200`
 
 
+# Video Demo
+
+
+
+https://github.com/user-attachments/assets/685209ce-6199-4947-b7f7-4230ad2294da
+
 
 # Screenshots
 
@@ -62,5 +68,6 @@ it should be running on `http://localhost:4200`
 
 
 <img width="842" height="665" alt="Screenshot 2025-09-11 083245" src="https://github.com/user-attachments/assets/080f6114-e192-434c-9aa6-c3dc6401a48e" />
+
 
 
