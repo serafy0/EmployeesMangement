@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SetupLinkDialogComponent } from './setup-link-dialog.component';
 
 @Component({
   selector: 'app-employee-create',
@@ -20,6 +22,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatDialogModule,
   ],
   templateUrl: './employee-create.component.html',
   styleUrls: ['./employee-create.component.scss'],
@@ -33,7 +36,8 @@ export class EmployeeCreateComponent implements OnInit {
     private fb: FormBuilder,
     private svc: EmployeeService,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -66,12 +70,36 @@ export class EmployeeCreateComponent implements OnInit {
       next: (res: any) => {
         this.loading = false;
         this.result = res;
-        const id = res?.employee?.id;
-        if (id) {
-          this.router.navigate([`/employees/${id}/signature`]);
-        } else {
-          this.snack.open('Employee created', 'Close', { duration: 3000 });
-        }
+        const setupUrl = res?.setupUrl ?? null;
+        const validFor = res?.validForHours ?? res?.validFor ?? 24;
+        const tokenExpiresAtUtc = res?.tokenExpiresAtUtc ?? null;
+        this.router.navigate(['/employees']).then(() => {
+          if (setupUrl) {
+            const snack = this.snack.open(
+              `Setup link generated (valid for ${validFor} hours)`,
+              'Copy',
+              { duration: 10000 }
+            );
+            snack.onAction().subscribe(() => {
+              if (navigator && (navigator as any).clipboard) {
+                navigator.clipboard.writeText(setupUrl);
+              } else {
+                const ta = document.createElement('textarea');
+                ta.value = setupUrl;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+              }
+            });
+            this.dialog.open(SetupLinkDialogComponent, {
+              width: '680px',
+              data: { setupUrl, validForHours: validFor, tokenExpiresAtUtc },
+            });
+          } else {
+            this.snack.open('Employee created', 'Close', { duration: 3000 });
+          }
+        });
       },
       error: (err) => {
         this.loading = false;
@@ -125,20 +153,16 @@ export class EmployeeCreateComponent implements OnInit {
 
   private mapServerKeyToControlName(key: string): string {
     if (!key) return key;
-    // direct exact match
     if (this.controls[key]) return key;
-    // case-insensitive match
     const lower = key.toLowerCase();
     const found = Object.keys(this.controls).find(
       (c) => c.toLowerCase() === lower
     );
     if (found) return found;
-    // snake_case or PascalCase -> camelCase (basic)
     const camel = key
       .replace(/[_\s]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
       .replace(/^./, (s) => s.toLowerCase());
     if (this.controls[camel]) return camel;
-    // try lowercase-first for Pascal (NationalId -> nationalId)
     const pascalToCamel = key.charAt(0).toLowerCase() + key.slice(1);
     if (this.controls[pascalToCamel]) return pascalToCamel;
     return key;

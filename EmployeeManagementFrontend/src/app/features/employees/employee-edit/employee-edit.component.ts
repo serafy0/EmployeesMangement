@@ -90,6 +90,7 @@ export class EmployeeEditComponent implements OnInit {
         this.loading = false;
         this.result = res;
         this.snack.open('Saved', 'Close', { duration: 2000 });
+        this.router.navigate(['/employees']);
       },
       error: (err) => {
         this.loading = false;
