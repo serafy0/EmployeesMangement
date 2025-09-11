@@ -13,7 +13,6 @@ import { AuthResponse } from '../models/auth-response.model';
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/Auth`;
 
-  // BehaviorSubject to hold the current user state, allowing components to subscribe to changes.
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 

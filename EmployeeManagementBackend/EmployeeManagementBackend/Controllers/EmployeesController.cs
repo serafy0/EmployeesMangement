@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Net;
 using EmployeeManagementBackend.Data.Models;
 using EmployeeManagementBackend.DTOs.Employees;
 using EmployeeManagementBackend.DTOs.User;
@@ -133,13 +134,19 @@ namespace EmployeeManagementBackend.Controllers
                 await _userManager.AddToRoleAsync(user, Roles.Employee);
 
                 var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var encodedToken = System.Net.WebUtility.UrlEncode(resetToken);
+                var encodedToken = WebUtility.UrlEncode(resetToken);
+                var encodedPhone = WebUtility.UrlEncode(user.PhoneNumber);
+                var setupPath = "/initial-setup";
+                var setupUrl =
+                    $"{_frontendUrl}{setupPath}?token={encodedToken}&phone={encodedPhone}";
+
                 return Ok(
                     new
                     {
                         message = "Employee created successfully",
                         username = user.PhoneNumber,
                         initialSetupToken = encodedToken,
+                        setupUrl,
                         employee = new
                         {
                             id = user.Id,
@@ -291,56 +298,5 @@ namespace EmployeeManagementBackend.Controllers
                 }
             );
         }
-
-        [HttpPost("{id}/generate-setup-token")]
-        [Authorize(Roles = Roles.Admin)]
-        public async Task<ActionResult<object>> GenerateSetupToken(string id)
-        {
-            var employee = await _userManager.FindByIdAsync(id);
-
-            if (employee == null)
-            {
-                return NotFound(new { message = "Employee not found" });
-            }
-
-            var roles = await _userManager.GetRolesAsync(employee);
-            if (!roles.Contains(Roles.Employee) || roles.Contains(Roles.Admin))
-            {
-                return BadRequest(new { message = "User is not an employee" });
-            }
-
-            if (employee.IsPasswordSet)
-            {
-                return BadRequest(
-                    new
-                    {
-                        message = "Employee has already set up their password. Use password reset instead.",
-                    }
-                );
-            }
-
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(employee);
-            var encodedToken = System.Net.WebUtility.UrlEncode(resetToken);
-
-            var setupPath = "/initial-setup";
-            var setupUrl = $"{_frontendUrl}{setupPath}?token={encodedToken}&userId={employee.Id}";
-
-            return Ok(
-                new
-                {
-                    message = "Setup token generated successfully",
-                    employeeId = employee.Id,
-                    phoneNumber = employee.PhoneNumber,
-                    initialSetupToken = resetToken,
-                    setupUrl = setupUrl,
-                    tokenGeneratedAt = DateTime.UtcNow,
-                }
-            );
-        }
-
-
-
-        
-
     }
 }

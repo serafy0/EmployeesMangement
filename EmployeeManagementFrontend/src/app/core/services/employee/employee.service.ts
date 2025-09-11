@@ -7,7 +7,6 @@ import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
-  // private baseUrl = '/api/employees'; // adjust if your API root differs
   private baseUrl = `${environment.apiUrl}/employees`;
 
   constructor(private http: HttpClient) {}

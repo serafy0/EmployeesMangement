@@ -8,8 +8,6 @@ import {
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
-
-// Material
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -30,38 +28,14 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatSnackBarModule,
   ],
   templateUrl: './initial-setup.component.html',
-  styles: [
-    `
-      .center {
-        display: flex;
-        justify-content: center;
-        padding-top: 40px;
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-      .form-card {
-        width: 100%;
-        max-width: 520px;
-      }
-      .full {
-        width: 100%;
-      }
-      .error-text {
-        color: #b00020;
-        margin-top: 8px;
-      }
-      .success-text {
-        color: #2e7d32;
-        margin-top: 8px;
-      }
-    `,
-  ],
+  styleUrls: ['./initial-setup.component.scss'],
 })
 export class InitialSetupComponent implements OnInit {
   setupForm: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
   resetToken: string | null = null;
+  phonePrefilled = false;
 
   constructor(
     private fb: FormBuilder,
@@ -83,10 +57,15 @@ export class InitialSetupComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.resetToken = params['token'] || null;
+      const phoneFromQuery = params['phone'] || null;
+      if (phoneFromQuery) {
+        this.setupForm.get('phoneNumber')!.setValue(phoneFromQuery);
+        this.setupForm.get('phoneNumber')!.disable();
+        this.phonePrefilled = true;
+      }
     });
   }
 
-  // getters for strict template typing
   get phoneNumber() {
     return this.setupForm.get('phoneNumber');
   }
@@ -110,7 +89,10 @@ export class InitialSetupComponent implements OnInit {
       return;
     }
     this.errorMessage = null;
-    const { phoneNumber, newPassword, confirmPassword } = this.setupForm.value;
+    const raw = this.setupForm.getRawValue();
+    const phoneNumber = raw.phoneNumber;
+    const newPassword = raw.newPassword;
+    const confirmPassword = raw.confirmPassword;
     this.authService
       .setInitialPassword(
         phoneNumber,

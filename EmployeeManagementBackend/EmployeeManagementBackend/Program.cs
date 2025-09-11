@@ -130,7 +130,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee Management API v1");
         options.RoutePrefix = "swagger";
     });
-    app.MapOpenApi(); // Keep this if you want both
+    app.MapOpenApi(); 
     app.UseExceptionHandler("/error-development");
 
     
@@ -143,14 +143,11 @@ if (app.Environment.IsDevelopment())
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var configuration = services.GetRequiredService<IConfiguration>();
 
-        // Ensure database is created
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated();
 
-        // Seed roles
         await RoleSeeder.SeedRolesAsync(roleManager);
 
-        // Seed admin user
         var userSeeder = new UserSeeder(userManager, configuration);
         await userSeeder.SeedAdminUserAsync();
     }

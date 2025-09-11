@@ -75,9 +75,7 @@ namespace EmployeeManagementBackend.Controllers
 
             attendance.CheckInTime = DateTime.UtcNow;
             attendance.IsPresent = true;
-            //var jobDelay = TimeSpan.FromHours(8);
-            //TODO : Change back to 8 hours
-            var jobDelay = TimeSpan.FromSeconds(30);
+            var jobDelay = TimeSpan.FromMinutes(3);
 
             _backgroundJobClient.Schedule<IAttendanceJobService>(
                 svc => svc.AutoCheckoutAsync(attendance.Id),

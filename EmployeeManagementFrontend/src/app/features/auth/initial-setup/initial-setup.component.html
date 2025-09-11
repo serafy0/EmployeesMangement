@@ -4,7 +4,8 @@
       <form [formGroup]="setupForm" (ngSubmit)="onSubmit()">
         <mat-form-field class="full" appearance="outline">
           <mat-label>Phone Number</mat-label>
-          <input matInput formControlName="phoneNumber" />
+          <input matInput formControlName="phoneNumber" [disabled]="phonePrefilled" />
+          <mat-hint *ngIf="phonePrefilled">Phone taken from invitation</mat-hint>
           <mat-error *ngIf="phoneNumber?.hasError('required')">
             Phone number is required.
           </mat-error>
