@@ -3,7 +3,7 @@
 ## clone this repo
 ```bash
 git clone https://github.com/serafy0/EemployeesMangement.git
-cd EemployeesMangement
+cd EmployeesMangement
 ```
 
 ## Backend setup
